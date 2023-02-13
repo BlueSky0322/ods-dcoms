@@ -1,0 +1,6 @@
+RMIConnections\Server.class
+Main\App.class
+RMIConnections\Client.class
+RMIConnections\Interface.class
+RMIConnections\Register.class
+.netbeans_automatic_build
