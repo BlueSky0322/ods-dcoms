@@ -5,7 +5,7 @@
  */
 package UserInterface;
 
-import Class.User;
+import Class.Customer;
 import RMIConnections.Client;
 import java.rmi.RemoteException;
 import java.util.Map;
@@ -164,7 +164,7 @@ public class LoginForm extends javax.swing.JFrame {
         }
         
         try {
-            Map<String, Object> loginResponse = Client.Object.login(new User(username, password));
+            Map<String, Object> loginResponse = Client.Object.login(new Customer(username, password));
             
             String message = (String) loginResponse.get("message");
             boolean success = (boolean) loginResponse.get("success");
@@ -176,7 +176,7 @@ public class LoginForm extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, message);            
             
             // redirect user to home page
-            dispose();
+//            dispose();
         } catch (RemoteException e) {
             e.printStackTrace();
         }

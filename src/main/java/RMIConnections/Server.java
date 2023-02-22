@@ -1,6 +1,6 @@
 package RMIConnections;
 
-import Class.User;
+import Class.Customer;
 import Class.utils.DerbyDB;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
@@ -23,7 +23,7 @@ public class Server extends UnicastRemoteObject implements Interface {
     }
 
     @Override
-    public Map<String, Object> login(User user) throws RemoteException {
+    public Map<String, Object> login(Customer customer) throws RemoteException {
         JDialog jDialog = new JDialog();
         jDialog.setAlwaysOnTop(true);
         
@@ -37,7 +37,7 @@ public class Server extends UnicastRemoteObject implements Interface {
                            WHERE username=?
                            """;
             PreparedStatement ps = DerbyDB.preparedStatement(query);
-            ps.setString(1, user.getUsername());
+            ps.setString(1, customer.getUsername());
             
             ResultSet result = ps.executeQuery();
             // if user not found
@@ -49,7 +49,7 @@ public class Server extends UnicastRemoteObject implements Interface {
             
             String password = result.getString("password");
             // if password is incorrect
-            if (!user.getPassword().equals(password)) {
+            if (!customer.getPassword().equals(password)) {
                 response.put("message", "Incorrect password!");
                 response.put("success", false);
                 return response;

@@ -1,6 +1,6 @@
 package RMIConnections;
 
-import Class.User;
+import Class.Customer;
 import java.rmi.*;
 import java.util.Map;
 
@@ -10,6 +10,6 @@ import java.util.Map;
  */
 public interface Interface extends Remote{
     public void placeholderMethod() throws RemoteException;
-    public Map<String, Object> login(User user) throws RemoteException;
+    public Map<String, Object> login(Customer customer) throws RemoteException;
 
 }
