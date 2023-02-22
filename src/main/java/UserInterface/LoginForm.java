@@ -5,11 +5,11 @@
  */
 package UserInterface;
 
-import java.net.MalformedURLException;
-import java.rmi.NotBoundException;
+import Class.User;
+import RMIConnections.Client;
 import java.rmi.RemoteException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Map;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -150,32 +150,42 @@ public class LoginForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
-        String fakeUsername = "han";
-        String fakePassword = "han123";
-        
         String username = this.usernameInput.getText();
         String password = new String(this.passwordInput.getPassword());
         
-        System.out.println(username);
-        System.out.println(password);
-            
-            
-        // TODO: check whether the username or password are empty
-        // TODO: add serialization to hold user login info (unsure): https://www.coderscampus.com/java-serialization/
-        // TODO: compare the username and password through database call
-            
-
         usernameInput.setText("");
         passwordInput.setText("");
+            
+        // TODO: add serialization to hold user login info (unsure): https://www.coderscampus.com/java-serialization/
 
-//        dispose();
-
+        if (username.isBlank() || password.isBlank()) {
+            JOptionPane.showMessageDialog(null, "Input fields cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        try {
+            Map<String, Object> loginResponse = Client.Object.login(new User(username, password));
+            
+            String message = (String) loginResponse.get("message");
+            boolean success = (boolean) loginResponse.get("success");
+            
+            if (!success) {
+                JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            JOptionPane.showMessageDialog(null, message);            
+            
+            // redirect user to home page
+            dispose();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_loginButtonActionPerformed
 
     private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
-        // display PersonRegistrationFrame
-//        new PersonRegistrationFrame().setVisible(true);
-        dispose();  // close LoginFrame
+        new RegistrationForm().setVisible(true);
+        dispose();
+
     }//GEN-LAST:event_registerButtonActionPerformed
 
     /**

@@ -4,16 +4,23 @@
  */
 package Class;
 
+
 /**
  *
  * @author handikaharianto
  */
-public class Customer {
-    private String username;
-    private String password;
+public class Customer extends User{
+
     private String firstName;
     private String lastName;
     private String passportNumber;
-    
-    
+    private String phoneNumber;
+
+    public Customer(String username, String password, String firstName, String lastName, String passportNumber, String phoneNumber) {
+        super(username, password);
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.passportNumber = passportNumber;
+        this.phoneNumber = phoneNumber;
+    } 
 }
