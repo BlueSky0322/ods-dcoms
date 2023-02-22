@@ -3,10 +3,17 @@ package RMIConnections;
 
 import java.net.*;
 import java.rmi.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Client {
-    public static void main(String[] args) throws RemoteException, NotBoundException, MalformedURLException {
-        Interface Object = (Interface) Naming.lookup("rmi://localhost:6969/DCOMS");
+    public static Interface Object;
+    public Client() {
+        try {
+            Object = (Interface) Naming.lookup("rmi://localhost:6969/DCOMS");
+        } catch (NotBoundException | MalformedURLException | RemoteException ex) {
+            Logger.getLogger(Client.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
 
