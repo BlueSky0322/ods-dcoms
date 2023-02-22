@@ -1,6 +1,7 @@
 package RMIConnections;
 
 
+import Class.utils.DerbyDB;
 import java.rmi.*;
 import java.rmi.registry.*;
 
@@ -20,6 +21,9 @@ public class Register {
             System.out.println("Port registered at: " + Reg.portNumber);
             socketclient.rebind("DCOMS", new Server());
             System.out.println("Server is running...");
+            
+            DerbyDB.connectDB();
+            System.out.println("Database is running...");
         } catch (RemoteException ex) {
             System.out.println(ex);
         }
