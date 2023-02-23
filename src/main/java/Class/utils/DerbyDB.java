@@ -35,4 +35,8 @@ public class DerbyDB {
     public static PreparedStatement preparedStatement(String query) throws SQLException {
         return dbConnection.prepareStatement(query);
     }
+    
+    public static void commit() throws SQLException {
+        dbConnection.commit();
+    }
 }
