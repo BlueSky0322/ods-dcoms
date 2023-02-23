@@ -150,11 +150,6 @@ public class LoginForm extends javax.swing.JFrame {
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         String username = this.usernameInput.getText();
         String password = new String(this.passwordInput.getPassword());
-        
-        usernameInput.setText("");
-        passwordInput.setText("");
-            
-        // TODO: add serialization to hold user login info (unsure): https://www.coderscampus.com/java-serialization/
 
         if (username.isBlank() || password.isBlank()) {
             JOptionPane.showMessageDialog(null, "Input fields cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -164,6 +159,9 @@ public class LoginForm extends javax.swing.JFrame {
         try {
             Client.Object.login(new Customer(username, password));
             JOptionPane.showMessageDialog(null, "User has succesfully logged in!");            
+         
+            usernameInput.setText("");
+            passwordInput.setText("");
             
         // redirect user to home page
 //            dispose();
