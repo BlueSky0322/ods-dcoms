@@ -10,6 +10,6 @@ import java.util.Map;
  */
 public interface Interface extends Remote{
     public void placeholderMethod() throws RemoteException;
-    public Map<String, Object> login(Customer customer) throws RemoteException;
+    public void login(Customer customer) throws Exception;
     public void register(Customer newCustomer) throws Exception;
 }
