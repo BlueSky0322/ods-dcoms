@@ -48,6 +48,7 @@ public class Server extends UnicastRemoteObject implements Interface {
     public void register(Customer newCustomer) throws Exception {
         String query;
         PreparedStatement ps;
+        ResultSet result;
         
         query = """
                 SELECT username
@@ -57,11 +58,25 @@ public class Server extends UnicastRemoteObject implements Interface {
         ps = DerbyDB.preparedStatement(query);
         ps.setString(1, newCustomer.getUsername());
 
-        ResultSet result = ps.executeQuery();
+        result = ps.executeQuery();
 
         // if user exists
         if (result.next()) {
             throw new Exception("A user with this username already exists!");
+        }
+        
+        query = """
+                SELECT passport
+                FROM Customer
+                WHERE passport=?
+                """;
+        ps = DerbyDB.preparedStatement(query);
+        ps.setString(1, newCustomer.getPassportNumber().toUpperCase());
+
+        result = ps.executeQuery();
+        // if passport number exists
+        if (result.next()) {
+            throw new Exception("Passport number already exists in the system!");
         }
 
         query = """
@@ -69,7 +84,7 @@ public class Server extends UnicastRemoteObject implements Interface {
                     (?, ?, ?, ?, ?)
                 """;
         ps = DerbyDB.preparedStatement(query);
-        ps.setString(1, newCustomer.getUsername());
+        ps.setString(1, newCustomer.getUsername().toLowerCase());
         ps.setString(2, Hasher.sha256(newCustomer.getPassword()));
         ps.setString(3, newCustomer.getFirstName());
         ps.setString(4, newCustomer.getLastName());
