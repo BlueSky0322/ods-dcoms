@@ -26,10 +26,10 @@ public class Server extends UnicastRemoteObject implements Interface {
     public Map<String, Object> login(User user) throws RemoteException {
         JDialog jDialog = new JDialog();
         jDialog.setAlwaysOnTop(true);
-        
+
         // to store login response
         Map<String, Object> response = new HashMap<>();
-        
+
         try {
             String query = """
                            SELECT username, password
@@ -38,7 +38,7 @@ public class Server extends UnicastRemoteObject implements Interface {
                            """;
             PreparedStatement ps = DerbyDB.preparedStatement(query);
             ps.setString(1, user.getUsername());
-            
+
             ResultSet result = ps.executeQuery();
             // if user not found
             if (!result.next()) {
@@ -46,7 +46,7 @@ public class Server extends UnicastRemoteObject implements Interface {
                 response.put("success", false);
                 return response;
             }
-            
+
             String password = result.getString("password");
             // if password is incorrect
             if (!user.getPassword().equals(password)) {
