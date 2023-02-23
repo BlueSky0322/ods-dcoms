@@ -2,7 +2,6 @@ package RMIConnections;
 
 import Class.Customer;
 import java.rmi.*;
-import java.util.Map;
 
 /**
  *

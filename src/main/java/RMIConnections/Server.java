@@ -2,12 +2,11 @@ package RMIConnections;
 
 import Class.Customer;
 import Class.utils.DerbyDB;
+import Class.utils.Hasher;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.Map;
 
 public class Server extends UnicastRemoteObject implements Interface {
 
@@ -36,9 +35,10 @@ public class Server extends UnicastRemoteObject implements Interface {
             throw new Exception("User not found!");
         }
 
+        String hashedPassword = Hasher.sha256(customer.getPassword());
         String password = result.getString("password");
         // if password is incorrect
-        if (!customer.getPassword().equals(password)) {
+        if (!hashedPassword.equals(password)) {
             throw new Exception("Incorrect password!");
         }
     }
@@ -46,12 +46,11 @@ public class Server extends UnicastRemoteObject implements Interface {
     
     @Override
     public void register(Customer newCustomer) throws Exception {
-        Map<String, Object> response = new HashMap<>();
         String query;
         PreparedStatement ps;
         
         query = """
-                SELECT username, password
+                SELECT username
                 FROM Customer
                 WHERE username=?
                 """;
@@ -71,7 +70,7 @@ public class Server extends UnicastRemoteObject implements Interface {
                 """;
         ps = DerbyDB.preparedStatement(query);
         ps.setString(1, newCustomer.getUsername());
-        ps.setString(2, newCustomer.getPassword());
+        ps.setString(2, Hasher.sha256(newCustomer.getPassword()));
         ps.setString(3, newCustomer.getFirstName());
         ps.setString(4, newCustomer.getLastName());
         ps.setString(5, newCustomer.getPassportNumber());
