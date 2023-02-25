@@ -4,23 +4,50 @@
  */
 package Class;
 
+import java.io.Serializable;
+
 
 /**
  *
  * @author handikaharianto
  */
-public class Customer extends User{
-
+public class Customer implements Serializable {
+    private String username;
+    private String password;
     private String firstName;
     private String lastName;
     private String passportNumber;
-    private String phoneNumber;
 
-    public Customer(String username, String password, String firstName, String lastName, String passportNumber, String phoneNumber) {
-        super(username, password);
+    public Customer(String username, String password, String firstName, String lastName, String passportNumber) {
+        this.username = username;
+        this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
         this.passportNumber = passportNumber;
-        this.phoneNumber = phoneNumber;
-    } 
+    }
+
+    public Customer(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public String getPassportNumber() {
+        return passportNumber;
+    }
 }
