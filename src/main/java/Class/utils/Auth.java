@@ -21,7 +21,17 @@ public class Auth {
 
     public static boolean isValidUsername(String username) {
         // accept alphanumeric and underscore, with at least 5-15 characters
-        return username.toLowerCase().matches("^(\\w){5,15}$");
+        return username.toLowerCase().matches("^[a-z][\\w]{5,15}$");
+    }
+
+    public static boolean usernameContainsLetters(String username) {
+        // accept if there is a least one letter
+        return username.toLowerCase().matches(".*[a-zA-Z].*");
+    }
+
+    public static boolean isValidUsernameLength(String username) {
+        // accept only username with the length of 5-15 characters
+        return username.length() > 4 && username.length() < 16;
     }
 
     public static boolean isValidPassport(String passport) {

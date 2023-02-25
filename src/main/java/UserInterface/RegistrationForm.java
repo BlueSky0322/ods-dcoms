@@ -252,9 +252,6 @@ public class RegistrationForm extends javax.swing.JFrame {
         String password = new String(passwordInput.getPassword());
         String confirmPassword = new String(confirmPasswordInput.getPassword());
         
-        // TODO: serialize the data when passing it to the backend
-        // TODO: check whether username existed inside the database
-        
         try {
             // check whether all input fields are filled
             if (!Auth.inputFieldsFilled(firstName, lastName, username, passportNumber, password, confirmPassword)) {
@@ -263,9 +260,20 @@ public class RegistrationForm extends javax.swing.JFrame {
             
             // check if username is valid
             if (!Auth.isValidUsername(username)) {
-                throw new Exception("Username should contain only alphanumeric and underscore, with at least 5-15 characters!");
+                throw new Exception("Username should contain only alphanumeric characters and underscore");
             }
             
+            // check if username length is valid
+            if (!Auth.isValidUsernameLength(username)) {
+                throw new Exception("Username should at least be 5-15 characters");
+            }
+            
+            // check if username contains letter
+            if (!Auth.usernameContainsLetters(username)) {
+                throw new Exception("Username should contain at least one letter!");
+            }
+            
+            // check if passport number is valid
             if (!Auth.isValidPassport(passportNumber)) {
                 throw new Exception("Passport number should contain a letter, followed by 8 numbers!");
             }
@@ -273,7 +281,7 @@ public class RegistrationForm extends javax.swing.JFrame {
             // check if passwords match
             if (!Auth.passwordsMatched(password, confirmPassword)) {
                 throw new Exception("Passwords do not match!");
-            }   
+            }
             
             // check if password is valid
             if (!Auth.isValidPassword(password)) {
