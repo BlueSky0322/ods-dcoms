@@ -5,10 +5,8 @@
  */
 package UserInterface;
 
-import Class.User;
+import Class.Customer;
 import RMIConnections.Client;
-import java.rmi.RemoteException;
-import java.util.Map;
 import javax.swing.JOptionPane;
 
 /**
@@ -152,11 +150,6 @@ public class LoginForm extends javax.swing.JFrame {
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
         String username = this.usernameInput.getText();
         String password = new String(this.passwordInput.getPassword());
-        
-        usernameInput.setText("");
-        passwordInput.setText("");
-            
-        // TODO: add serialization to hold user login info (unsure): https://www.coderscampus.com/java-serialization/
 
         if (username.isBlank() || password.isBlank()) {
             JOptionPane.showMessageDialog(null, "Input fields cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -164,21 +157,16 @@ public class LoginForm extends javax.swing.JFrame {
         }
         
         try {
-            Map<String, Object> loginResponse = Client.Object.login(new User(username, password));
+            Client.Object.login(new Customer(username, password));
+            JOptionPane.showMessageDialog(null, "User has succesfully logged in!");            
+         
+            usernameInput.setText("");
+            passwordInput.setText("");
             
-            String message = (String) loginResponse.get("message");
-            boolean success = (boolean) loginResponse.get("success");
-            
-            if (!success) {
-                JOptionPane.showMessageDialog(null, message, "Error", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            JOptionPane.showMessageDialog(null, message);            
-            
-            // redirect user to home page
-            dispose();
-        } catch (RemoteException e) {
-            e.printStackTrace();
+        // redirect user to home page
+//            dispose();
+        } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_loginButtonActionPerformed
 

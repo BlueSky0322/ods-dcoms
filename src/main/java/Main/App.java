@@ -1,6 +1,7 @@
 package Main;
 
 import RMIConnections.Client;
+import UserInterface.AddItemForm;
 import UserInterface.LoginForm;
 
 /*
@@ -15,9 +16,8 @@ public class App {
 
     public static void main(String[] args) {
         System.out.println("Connection established with server.");
-        //Testing GitHub
         Client client = new Client();
         
-        new LoginForm().setVisible(true);
+        new AddItemForm().setVisible(true);
     }
 }

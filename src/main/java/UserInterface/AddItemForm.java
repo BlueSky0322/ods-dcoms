@@ -4,6 +4,12 @@
  */
 package UserInterface;
 
+import Class.Customer;
+import Class.Item;
+import Class.utils.Auth;
+import RMIConnections.Client;
+import javax.swing.JOptionPane;
+
 /**
  *
  * @author ryann
@@ -34,8 +40,8 @@ public class AddItemForm extends javax.swing.JFrame {
         stockAmountInput = new javax.swing.JTextField();
         itemNameInput = new javax.swing.JTextField();
         unitPriceInput = new javax.swing.JTextField();
-        loginButton = new javax.swing.JButton();
-        loginButton1 = new javax.swing.JButton();
+        addButton = new javax.swing.JButton();
+        cancelButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -89,23 +95,23 @@ public class AddItemForm extends javax.swing.JFrame {
             }
         });
 
-        loginButton.setBackground(new java.awt.Color(255, 255, 255));
-        loginButton.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        loginButton.setForeground(new java.awt.Color(51, 51, 51));
-        loginButton.setText("Add");
-        loginButton.addActionListener(new java.awt.event.ActionListener() {
+        addButton.setBackground(new java.awt.Color(255, 255, 255));
+        addButton.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+        addButton.setForeground(new java.awt.Color(51, 51, 51));
+        addButton.setText("Add");
+        addButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loginButtonActionPerformed(evt);
+                addButtonActionPerformed(evt);
             }
         });
 
-        loginButton1.setBackground(new java.awt.Color(255, 255, 255));
-        loginButton1.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        loginButton1.setForeground(new java.awt.Color(51, 51, 51));
-        loginButton1.setText("Cancel");
-        loginButton1.addActionListener(new java.awt.event.ActionListener() {
+        cancelButton.setBackground(new java.awt.Color(255, 255, 255));
+        cancelButton.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
+        cancelButton.setForeground(new java.awt.Color(51, 51, 51));
+        cancelButton.setText("Cancel");
+        cancelButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                loginButton1ActionPerformed(evt);
+                cancelButtonActionPerformed(evt);
             }
         });
 
@@ -117,9 +123,9 @@ public class AddItemForm extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(222, 222, 222)
-                        .addComponent(loginButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(addButton, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(56, 56, 56)
-                        .addComponent(loginButton1))
+                        .addComponent(cancelButton))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(158, 158, 158)
                         .addComponent(jLabel1))
@@ -155,8 +161,8 @@ public class AddItemForm extends javax.swing.JFrame {
                     .addComponent(stockAmountInput, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 83, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(loginButton1)
-                    .addComponent(loginButton))
+                    .addComponent(cancelButton)
+                    .addComponent(addButton))
                 .addGap(53, 53, 53))
         );
 
@@ -186,15 +192,43 @@ public class AddItemForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_unitPriceInputActionPerformed
 
-    private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
+    private void addButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addButtonActionPerformed
 
+        String itemName = this.itemNameInput.getText();
+        String unitPrice = this.unitPriceInput.getText();
+        String stockAmount = this.stockAmountInput.getText();
 
-        //        dispose();
-    }//GEN-LAST:event_loginButtonActionPerformed
+        try {
+            // check whether all input fields are filled
+            if (!Auth.inputFieldsFilled(itemName, unitPrice, stockAmount)) {
+                throw new Exception("All input fields are required!");
+            }
+            if (!Auth.isValidItemName(itemName)) {
+                throw new Exception("Name must contain at least 5-25 characters.");
+            }
+            if (!Auth.isValidUnitPrice(unitPrice)) {
+                throw new Exception("Price must contain value two decimals.");
+            }
+            if (!Auth.isValidStockAmount(stockAmount)) {
+                throw new Exception("Enter a value between 1-9999.");
+            }
+            Item newItem = new Item(itemName, Double.parseDouble(unitPrice), Integer.parseInt(stockAmount));
+            Client.Object.addItem(newItem);
+            JOptionPane.showMessageDialog(null, String.format("Item: %s\nUnit Price: %.2f\nStock Amount: %d \n\nItem successfully been added!", itemName, unitPrice, stockAmount));
 
-    private void loginButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButton1ActionPerformed
+            //reset input fields to empty
+            itemNameInput.setText(""); 
+            unitPriceInput.setText("");
+            stockAmountInput.setText("");
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_addButtonActionPerformed
+
+    private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_loginButton1ActionPerformed
+    }//GEN-LAST:event_cancelButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -232,14 +266,14 @@ public class AddItemForm extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton addButton;
+    private javax.swing.JButton cancelButton;
     private javax.swing.JTextField itemNameInput;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JButton loginButton;
-    private javax.swing.JButton loginButton1;
     private javax.swing.JTextField stockAmountInput;
     private javax.swing.JTextField unitPriceInput;
     // End of variables declaration//GEN-END:variables
