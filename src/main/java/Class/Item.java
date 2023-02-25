@@ -9,18 +9,18 @@ package Class;
  * @author ryann
  */
 public class Item {
-    private String name;
+    private String itemName;
     private double unitPrice;
     private int stockAmount;
 
     public Item(String name, double unitPrice, int stockAmount) {
-        this.name = name;
+        this.itemName = name;
         this.unitPrice = unitPrice;
         this.stockAmount = stockAmount;
     }
 
-    public String getName() {
-        return name;
+    public String getItemName() {
+        return itemName;
     }
 
     public int getStockAmount() {
