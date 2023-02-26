@@ -49,27 +49,22 @@ public class Auth {
     }
 
     public static boolean isValidItemName(String itemName) {
-        // accept alphanumeric and underscore, with at least 5-25 characters
-        return itemName.toLowerCase().matches("^(\\w){5,25}$");
+        // accept alphanumeric and space, with at least 5-25 characters
+        return itemName.matches("^[\\w\\s\\d]{5,25}$");
     }
 
-    public static boolean isValidUnitPrice(String unitPrice) {
+    public static boolean isValidUnitPrice(double unitPrice) {
         // accept double with maximum 2 decimal points
         try {
-            double value = Double.parseDouble(unitPrice);
-            return Math.abs(value - Math.floor(value)) == 0.0 || unitPrice.matches("^\\d+\\.\\d{2}$");
+            return Math.abs(unitPrice - Math.floor(unitPrice)) == 0.0 || String.valueOf(unitPrice).matches("^\\d+\\.\\d{2}$");
         } catch (NumberFormatException e) {
             return false;
         }
     }
 
-    public static boolean isValidStockAmount(String stockAmount) {
-        // accept any int with maximum 4 digits (0-9999)
-        try {
-            int value = Integer.parseInt(stockAmount);
-            return value >= 0 && value < 10000;
-        } catch (NumberFormatException e) {
-            return false;
-        }
+    public static boolean isValidStockAmount(int stockAmount) {
+        // accept any int with maximum 4 digits (1-9999)
+        return stockAmount > 0 && stockAmount < 10000;
     }
+
 }
