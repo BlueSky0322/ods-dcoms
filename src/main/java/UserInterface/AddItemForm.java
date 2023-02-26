@@ -4,12 +4,9 @@
  */
 package UserInterface;
 
-import Class.User;
 import Class.Item;
 import Class.utils.Auth;
 import RMIConnections.Client;
-import java.rmi.RemoteException;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
@@ -397,6 +394,8 @@ public class AddItemForm extends javax.swing.JFrame {
         String unitPrice = this.unitPriceInput.getText();
         String stockAmount = this.stockAmountInput.getText();
 
+        double price = Double.parseDouble(unitPrice);
+        int quantity = Integer.parseInt(stockAmount);
         try {
             // check whether all input fields are filled
             if (!Auth.inputFieldsFilled(itemName, unitPrice, stockAmount)) {
@@ -405,15 +404,16 @@ public class AddItemForm extends javax.swing.JFrame {
             if (!Auth.isValidItemName(itemName)) {
                 throw new Exception("Name must contain at least 5-25 characters.");
             }
-            if (!Auth.isValidUnitPrice(unitPrice)) {
+            if (!Auth.isValidUnitPrice(price)) {
                 throw new Exception("Price must contain value two decimals.");
             }
-            if (!Auth.isValidStockAmount(stockAmount)) {
+            if (!Auth.isValidStockAmount(quantity)) {
                 throw new Exception("Enter a value between 1-9999.");
             }
-            Item newItem = new Item(itemName, Double.parseDouble(unitPrice), Integer.parseInt(stockAmount));
+
+            Item newItem = new Item(itemName, price, quantity);
             Client.Object.addItem(newItem);
-            JOptionPane.showMessageDialog(null, String.format("Item: %s\nUnit Price: %.2f\nStock Amount: %d \n\nItem successfully been added!", itemName, unitPrice, stockAmount));
+            JOptionPane.showMessageDialog(null, String.format("Item: %s\nUnit Price: %.2s\nStock Amount: %s \n\nItem successfully been added!", itemName, unitPrice, stockAmount));
 
             //reset input fields to empty
             itemNameInput.setText("");
