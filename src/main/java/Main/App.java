@@ -18,6 +18,6 @@ public class App {
         System.out.println("Connection established with server.");
         Client client = new Client();
         
-        new AddItemForm().setVisible(true);
+        new LoginForm().setVisible(true);
     }
 }

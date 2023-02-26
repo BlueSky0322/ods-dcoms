@@ -4,7 +4,7 @@
  */
 package UserInterface;
 
-import Class.Customer;
+import Class.User;
 import Class.Item;
 import Class.utils.Auth;
 import RMIConnections.Client;

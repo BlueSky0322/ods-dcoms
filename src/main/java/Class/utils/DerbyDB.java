@@ -81,13 +81,14 @@ public class DerbyDB {
             rs = dbConnection.getMetaData().getTables(null, null, "CUSTOMER", null);
             if (!rs.next()) {
                 createCustomerTableQuery
-                        = "CREATE TABLE Customer ("
+                        = "CREATE TABLE OdsUser ("
                         + "cust_id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
                         + "username VARCHAR(15) NOT NULL UNIQUE,"
                         + "password VARCHAR(255) NOT NULL,"
                         + "first_name VARCHAR(45) NOT NULL,"
                         + "last_name VARCHAR(45) NOT NULL,"
-                        + "passport VARCHAR(9) NOT NULL UNIQUE)";
+                        + "passport VARCHAR(9) NOT NULL UNIQUE,"
+                        + "role VARCHAR(20) NOT NULL)";
                 stmt.executeUpdate(createCustomerTableQuery);
                 System.out.println("Table 'Customer' created successfully.");
                 commit();
