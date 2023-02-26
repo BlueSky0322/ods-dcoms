@@ -102,7 +102,7 @@ public class Server extends UnicastRemoteObject implements Interface {
 
         query = """
                 SELECT item_name
-                FROM Item
+                FROM ITEM
                 WHERE item_name=?
                 """;
         ps = DerbyDB.preparedStatement(query);
@@ -116,11 +116,11 @@ public class Server extends UnicastRemoteObject implements Interface {
         }
 
         query = """
-                INSERT INTO Item (item_name, unit_price, stock_amount) VALUES
+                INSERT INTO ITEM (item_name, unit_price, stock_amount) VALUES
                     (?, ?, ?)
                 """;
         ps = DerbyDB.preparedStatement(query);
-        ps.setString(1, newItem.getItemName().toLowerCase());
+        ps.setString(1, newItem.getItemName());
         ps.setDouble(2, newItem.getUnitPrice());
         ps.setInt(3, newItem.getStockAmount());
 
