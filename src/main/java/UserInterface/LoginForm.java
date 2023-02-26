@@ -162,7 +162,7 @@ public class LoginForm extends javax.swing.JFrame {
          
             usernameInput.setText("");
             passwordInput.setText("");
-            
+
         // redirect user to home page
 //            dispose();
         } catch (Exception e) {

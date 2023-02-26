@@ -258,6 +258,11 @@ public class RegistrationForm extends javax.swing.JFrame {
                 throw new Exception("All input fields are required!");
             }
             
+            // check if username contains letter
+            if (!Auth.usernameContainsLetters(username)) {
+                throw new Exception("Username should contain at least one letter!");
+            }
+            
             // check if username is valid
             if (!Auth.isValidUsername(username)) {
                 throw new Exception("Username should contain only alphanumeric characters and underscore");
@@ -266,11 +271,6 @@ public class RegistrationForm extends javax.swing.JFrame {
             // check if username length is valid
             if (!Auth.isValidUsernameLength(username)) {
                 throw new Exception("Username should at least be 5-15 characters");
-            }
-            
-            // check if username contains letter
-            if (!Auth.usernameContainsLetters(username)) {
-                throw new Exception("Username should contain at least one letter!");
             }
             
             // check if passport number is valid
