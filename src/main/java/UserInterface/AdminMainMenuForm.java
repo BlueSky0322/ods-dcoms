@@ -4,6 +4,9 @@
  */
 package UserInterface;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author handikaharianto
@@ -113,8 +116,12 @@ public class AdminMainMenuForm extends javax.swing.JFrame {
     }//GEN-LAST:event_genReportButtonActionPerformed
 
     private void crudButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crudButtonActionPerformed
-        // TODO add your handling code here:
-        new AddItemForm().setVisible(true);
+        try {
+            // TODO add your handling code here:
+            new AddItemForm().setVisible(true);
+        } catch (Exception ex) {
+            Logger.getLogger(AdminMainMenuForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_crudButtonActionPerformed
 
     /**
