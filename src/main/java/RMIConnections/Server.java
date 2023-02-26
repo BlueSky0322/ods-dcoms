@@ -9,6 +9,12 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import org.apache.commons.dbutils.DbUtils;
 
 public class Server extends UnicastRemoteObject implements Interface {
 
@@ -45,7 +51,7 @@ public class Server extends UnicastRemoteObject implements Interface {
         }
         String username = result.getString("username");
         Role role = Role.valueOf(result.getString("role"));
-        
+
         return new User(username, password, role);
     }
 
@@ -134,4 +140,33 @@ public class Server extends UnicastRemoteObject implements Interface {
         System.out.println(rowsInserted + " rows inserted.");
         DerbyDB.commit();
     }
+
+    @Override
+    public DefaultTableModel displayTable() {
+        ResultSet rs;
+        String[] columnNames = {"ID", "Item Name", "Unit Price", "Stock Amount"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        model.setRowCount(0);
+        try {
+
+            rs = DerbyDB.createStatement().executeQuery("SELECT * FROM ITEM");
+
+            while (rs.next()) {
+                int itemID = rs.getInt("ITEM_ID");
+                String itemName = rs.getString("ITEM_NAME");
+                double unitPrice = rs.getDouble("UNIT_PRICE");
+                int stockAmount = rs.getInt("STOCK_AMOUNT");
+
+                Object[] row = {itemID, itemName, unitPrice, stockAmount};
+                model.addRow(row);
+            }
+            //commit changes to database
+            DerbyDB.commit();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return model;
+    }
+
 }
