@@ -198,6 +198,7 @@ public class AddItemForm extends javax.swing.JFrame {
         String unitPrice = this.unitPriceInput.getText();
         String stockAmount = this.stockAmountInput.getText();
 
+
         try {
             // check whether all input fields are filled
             if (!Auth.inputFieldsFilled(itemName, unitPrice, stockAmount)) {
@@ -223,11 +224,12 @@ public class AddItemForm extends javax.swing.JFrame {
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println(e.getMessage());
         }
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
-        // TODO add your handling code here:
+        dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     /**
