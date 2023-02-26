@@ -12,9 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-import org.apache.commons.dbutils.DbUtils;
 
 public class Server extends UnicastRemoteObject implements Interface {
 
