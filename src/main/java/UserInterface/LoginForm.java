@@ -167,7 +167,7 @@ public class LoginForm extends javax.swing.JFrame {
         if (user.getRole().equals(Role.CUSTOMER)) {
             new CustomerPlaceholder().setVisible(true);
         } else {
-            new AdminPlaceholder().setVisible(true);
+            new AdminMainMenuForm().setVisible(true);
         }
         
         dispose();            
