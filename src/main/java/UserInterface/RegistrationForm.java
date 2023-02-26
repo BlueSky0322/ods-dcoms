@@ -245,12 +245,12 @@ public class RegistrationForm extends javax.swing.JFrame {
     }//GEN-LAST:event_backToLoginButtonActionPerformed
 
     private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
-        String firstName = this.firstNameInput.getText();
-        String lastName = this.lastNameInput.getText();
-        String username = usernameInput.getText();
-        String passportNumber = passportNumberInput.getText();
-        String password = new String(passwordInput.getPassword());
-        String confirmPassword = new String(confirmPasswordInput.getPassword());
+        String firstName = this.firstNameInput.getText().trim();
+        String lastName = this.lastNameInput.getText().trim();
+        String username = usernameInput.getText().trim();
+        String passportNumber = passportNumberInput.getText().trim();
+        String password = new String(passwordInput.getPassword()).trim();
+        String confirmPassword = new String(confirmPasswordInput.getPassword()).trim();
         
         try {
             // check whether all input fields are filled
