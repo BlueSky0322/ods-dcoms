@@ -5,7 +5,8 @@
  */
 package UserInterface;
 
-import Class.Customer;
+import Class.User;
+import Enum.Role;
 import RMIConnections.Client;
 import javax.swing.JOptionPane;
 
@@ -157,14 +158,19 @@ public class LoginForm extends javax.swing.JFrame {
         }
         
         try {
-            Client.Object.login(new Customer(username, password));
+            User user = Client.Object.login(new User(username, password));
             JOptionPane.showMessageDialog(null, "User has succesfully logged in!");            
          
             usernameInput.setText("");
             passwordInput.setText("");
-            
-        // redirect user to home page
-//            dispose();
+
+        if (user.getRole().equals(Role.CUSTOMER)) {
+            new CustomerPlaceholder().setVisible(true);
+        } else {
+            new AdminPlaceholder().setVisible(true);
+        }
+        
+        dispose();            
         } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

@@ -1,6 +1,6 @@
 package RMIConnections;
 
-import Class.Customer;
+import Class.User;
 import Class.Item;
 import java.rmi.*;
 
@@ -10,7 +10,7 @@ import java.rmi.*;
  */
 public interface Interface extends Remote{
     public void placeholderMethod() throws RemoteException;
-    public void login(Customer customer) throws Exception;
-    public void register(Customer newCustomer) throws Exception;
+    public User login(User user) throws Exception;
+    public void register(User newUser) throws Exception;
     public void addItem(Item newItem) throws Exception;
 }

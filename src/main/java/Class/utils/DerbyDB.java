@@ -81,18 +81,48 @@ public class DerbyDB {
             rs = dbConnection.getMetaData().getTables(null, null, "CUSTOMER", null);
             if (!rs.next()) {
                 createCustomerTableQuery
-                        = "CREATE TABLE Customer ("
+                        = "CREATE TABLE OdsUser ("
                         + "cust_id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
                         + "username VARCHAR(15) NOT NULL UNIQUE,"
                         + "password VARCHAR(255) NOT NULL,"
                         + "first_name VARCHAR(45) NOT NULL,"
                         + "last_name VARCHAR(45) NOT NULL,"
-                        + "passport VARCHAR(9) NOT NULL UNIQUE)";
+                        + "passport VARCHAR(9) NOT NULL UNIQUE,"
+                        + "role VARCHAR(20) NOT NULL)";
                 stmt.executeUpdate(createCustomerTableQuery);
                 System.out.println("Table 'Customer' created successfully.");
                 commit();
             } else {
                 System.out.println("Table 'Customer' already exists.");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error creating/checking table: " + ex.getMessage());
+        }
+    }
+    
+    public static void initialiseOrderTable(Statement stmt) throws SQLException {
+        String createOrderTableQuery;
+        ResultSet rs;
+        try {
+            rs = dbConnection.getMetaData().getTables(null, null, "ITEM", null);
+            if (!rs.next()) {
+                createOrderTableQuery
+                        = "CREATE TABLE Order ("
+                        + "receipt_no INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
+                        + "order_date TIMESTAMP NOT NULL,"
+                        + "customer_name VARCHAR(255) NOT NULL,"
+                        + "item_name VARCHAR(255) NOT NULL,"
+                        + "unit_price DECIMAL(10,2) NOT NULL,"
+                        + "order_quantity INT NOT NULL,"
+                        + "item_totalprice DECIMAL(10,2) NOT NULL,"
+                        + "order_totalprice DECIMAL(10,2) NOT NULL,"
+                        + "payment_type VARCHAR(40) NOT NULL,"
+                        + "payment_time TIMESTAMP NOT NULL)";
+                stmt.executeUpdate(createOrderTableQuery);
+                System.out.println("Table 'Order' created successfully.");
+                commit();
+            } else {
+                System.out.println("Table 'Order' already exists.");
             }
         } catch (SQLException ex) {
             System.out.println("Error creating/checking table: " + ex.getMessage());

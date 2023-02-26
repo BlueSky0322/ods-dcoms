@@ -21,7 +21,7 @@ public class Auth {
 
     public static boolean isValidUsername(String username) {
         // accept alphanumeric and underscore, with at least 5-15 characters
-        return username.toLowerCase().matches("^[a-z][\\w]{5,15}$");
+        return username.toLowerCase().matches("^[a-z][\\w]*$");
     }
 
     public static boolean usernameContainsLetters(String username) {

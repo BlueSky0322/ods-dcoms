@@ -4,21 +4,24 @@
  */
 package Class;
 
+import Enum.Role;
 import java.io.Serializable;
-
 
 /**
  *
  * @author handikaharianto
  */
-public class Customer implements Serializable {
+
+public class User implements Serializable {
     private String username;
     private String password;
     private String firstName;
     private String lastName;
     private String passportNumber;
+    private Role role;
+   
 
-    public Customer(String username, String password, String firstName, String lastName, String passportNumber) {
+    public User(String username, String password, String firstName, String lastName, String passportNumber) {
         this.username = username;
         this.password = password;
         this.firstName = firstName;
@@ -26,7 +29,13 @@ public class Customer implements Serializable {
         this.passportNumber = passportNumber;
     }
 
-    public Customer(String username, String password) {
+    public User(String username, String password, Role role) {
+        this.username = username;
+        this.password = password;
+        this.role = role;
+    }
+    
+    public User(String username, String password) {
         this.username = username;
         this.password = password;
     }
@@ -50,4 +59,8 @@ public class Customer implements Serializable {
     public String getPassportNumber() {
         return passportNumber;
     }
+
+    public Role getRole() {
+        return role;
+    }    
 }

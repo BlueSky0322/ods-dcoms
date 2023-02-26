@@ -1,9 +1,10 @@
 package RMIConnections;
 
-import Class.Customer;
+import Class.User;
 import Class.Item;
 import Class.utils.DerbyDB;
 import Class.utils.Hasher;
+import Enum.Role;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.PreparedStatement;
@@ -21,14 +22,14 @@ public class Server extends UnicastRemoteObject implements Interface {
     }
 
     @Override
-    public void login(Customer customer) throws Exception {
+    public User login(User user) throws Exception {
         String query = """
-                       SELECT username, password
-                       FROM Customer
+                       SELECT username, password, role
+                       FROM OdsUser
                        WHERE username=?
                        """;
         PreparedStatement ps = DerbyDB.preparedStatement(query);
-        ps.setString(1, customer.getUsername());
+        ps.setString(1, user.getUsername());
 
         ResultSet result = ps.executeQuery();
         // if user not found
@@ -36,27 +37,31 @@ public class Server extends UnicastRemoteObject implements Interface {
             throw new Exception("User not found!");
         }
 
-        String hashedPassword = Hasher.sha256(customer.getPassword());
+        String hashedPassword = Hasher.sha256(user.getPassword());
         String password = result.getString("password");
         // if password is incorrect
         if (!hashedPassword.equals(password)) {
             throw new Exception("Incorrect password!");
         }
+        String username = result.getString("username");
+        Role role = Role.valueOf(result.getString("role"));
+        
+        return new User(username, password, role);
     }
 
     @Override
-    public void register(Customer newCustomer) throws Exception {
+    public void register(User newUser) throws Exception {
         String query;
         PreparedStatement ps;
         ResultSet result;
 
         query = """
                 SELECT username
-                FROM Customer
+                FROM OdsUser
                 WHERE username=?
                 """;
         ps = DerbyDB.preparedStatement(query);
-        ps.setString(1, newCustomer.getUsername());
+        ps.setString(1, newUser.getUsername());
 
         result = ps.executeQuery();
 
@@ -67,11 +72,11 @@ public class Server extends UnicastRemoteObject implements Interface {
 
         query = """
                 SELECT passport
-                FROM Customer
+                FROM OdsUser
                 WHERE passport=?
                 """;
         ps = DerbyDB.preparedStatement(query);
-        ps.setString(1, newCustomer.getPassportNumber().toUpperCase());
+        ps.setString(1, newUser.getPassportNumber().toUpperCase());
 
         result = ps.executeQuery();
         // if passport number exists
@@ -80,15 +85,16 @@ public class Server extends UnicastRemoteObject implements Interface {
         }
 
         query = """
-                INSERT INTO Customer (username, password, first_name, last_name, passport) VALUES
-                    (?, ?, ?, ?, ?)
+                INSERT INTO OdsUser (username, password, first_name, last_name, passport, role) VALUES
+                    (?, ?, ?, ?, ?, ?)
                 """;
         ps = DerbyDB.preparedStatement(query);
-        ps.setString(1, newCustomer.getUsername().toLowerCase());
-        ps.setString(2, Hasher.sha256(newCustomer.getPassword()));
-        ps.setString(3, newCustomer.getFirstName());
-        ps.setString(4, newCustomer.getLastName());
-        ps.setString(5, newCustomer.getPassportNumber());
+        ps.setString(1, newUser.getUsername().toLowerCase());
+        ps.setString(2, Hasher.sha256(newUser.getPassword()));
+        ps.setString(3, newUser.getFirstName());
+        ps.setString(4, newUser.getLastName());
+        ps.setString(5, newUser.getPassportNumber());
+        ps.setString(6, Role.CUSTOMER.name());
 
         ps.executeUpdate();
         DerbyDB.commit();

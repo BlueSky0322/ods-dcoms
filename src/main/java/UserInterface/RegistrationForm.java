@@ -5,7 +5,7 @@
  */
 package UserInterface;
 
-import Class.Customer;
+import Class.User;
 import Class.utils.Auth;
 import RMIConnections.Client;
 import javax.swing.JOptionPane;
@@ -258,6 +258,11 @@ public class RegistrationForm extends javax.swing.JFrame {
                 throw new Exception("All input fields are required!");
             }
             
+            // check if username contains letter
+            if (!Auth.usernameContainsLetters(username)) {
+                throw new Exception("Username should contain at least one letter!");
+            }
+            
             // check if username is valid
             if (!Auth.isValidUsername(username)) {
                 throw new Exception("Username should contain only alphanumeric characters and underscore");
@@ -266,11 +271,6 @@ public class RegistrationForm extends javax.swing.JFrame {
             // check if username length is valid
             if (!Auth.isValidUsernameLength(username)) {
                 throw new Exception("Username should at least be 5-15 characters");
-            }
-            
-            // check if username contains letter
-            if (!Auth.usernameContainsLetters(username)) {
-                throw new Exception("Username should contain at least one letter!");
             }
             
             // check if passport number is valid
@@ -288,7 +288,7 @@ public class RegistrationForm extends javax.swing.JFrame {
                 throw new Exception("Password should at least be 8 characters!");
             }
             
-            Customer newCustomer = new Customer(username.toLowerCase(), password, firstName, lastName, passportNumber);
+            User newCustomer = new User(username.toLowerCase(), password, firstName, lastName, passportNumber);
             Client.Object.register(newCustomer);
             JOptionPane.showMessageDialog(null, "Account has successfully been registered!");
             
