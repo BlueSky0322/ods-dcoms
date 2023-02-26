@@ -10,8 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -74,11 +72,11 @@ public class DerbyDB {
         }
     }
 
-    public static void initialiseCustomerTable(Statement stmt) {
+    public static void initialiseCustomerTable(Statement stmt) throws SQLException {
         String createCustomerTableQuery;
         ResultSet rs;
         try {
-            rs = dbConnection.getMetaData().getTables(null, null, "CUSTOMER", null);
+            rs = dbConnection.getMetaData().getTables(null, null, "ODSUSER", null);
             if (!rs.next()) {
                 createCustomerTableQuery
                         = "CREATE TABLE OdsUser ("
@@ -90,10 +88,10 @@ public class DerbyDB {
                         + "passport VARCHAR(9) NOT NULL UNIQUE,"
                         + "role VARCHAR(20) NOT NULL)";
                 stmt.executeUpdate(createCustomerTableQuery);
-                System.out.println("Table 'Customer' created successfully.");
+                System.out.println("Table 'OdsUser' created successfully.");
                 commit();
             } else {
-                System.out.println("Table 'Customer' already exists.");
+                System.out.println("Table 'OdsUser' already exists.");
             }
         } catch (SQLException ex) {
             System.out.println("Error creating/checking table: " + ex.getMessage());
