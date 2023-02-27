@@ -27,7 +27,6 @@ public class DerbyDB {
             dbConnection = DriverManager.getConnection(DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
             dbConnection.setAutoCommit(false);
             System.out.println("Database is running...");
-            System.out.println("Checking tables...");
             //initialise all tables
             initialiseItemTable(createStatement());
             initialiseCustomerTable(createStatement());
@@ -49,6 +48,10 @@ public class DerbyDB {
         dbConnection.commit();
     }
 
+    public static void close() throws SQLException {
+        dbConnection.close();
+    }
+
     public static void initialiseItemTable(Statement stmt) throws SQLException {
         String createItemTableQuery;
         ResultSet rs;
@@ -65,8 +68,8 @@ public class DerbyDB {
                 System.out.println("Table 'Item' created successfully.");
                 commit();
             } else {
-                System.out.println("Table 'Item' already exists.");
-            }
+                System.out.println("Table 'Item' already exists. No new table created.");
+            } 
         } catch (SQLException ex) {
             System.out.println("Error creating/checking table: " + ex.getMessage());
         }
@@ -91,13 +94,13 @@ public class DerbyDB {
                 System.out.println("Table 'OdsUser' created successfully.");
                 commit();
             } else {
-                System.out.println("Table 'OdsUser' already exists.");
-            }
+                System.out.println("Table 'OdsUser' already exists. No new table created.");
+            } 
         } catch (SQLException ex) {
             System.out.println("Error creating/checking table: " + ex.getMessage());
         }
     }
-    
+
     public static void initialiseOrderTable(Statement stmt) throws SQLException {
         String createOrderTableQuery;
         ResultSet rs;
@@ -120,7 +123,7 @@ public class DerbyDB {
                 System.out.println("Table 'Order' created successfully.");
                 commit();
             } else {
-                System.out.println("Table 'Order' already exists.");
+                System.out.println("Table 'Order' already exists. No new table created.");
             }
         } catch (SQLException ex) {
             System.out.println("Error creating/checking table: " + ex.getMessage());
