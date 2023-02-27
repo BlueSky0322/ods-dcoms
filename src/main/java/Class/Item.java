@@ -4,11 +4,14 @@
  */
 package Class;
 
+import java.io.Serializable;
+
 /**
  *
  * @author ryann
  */
-public class Item {
+public class Item implements Serializable {
+
     private String itemName;
     private double unitPrice;
     private int stockAmount;
@@ -29,5 +32,6 @@ public class Item {
 
     public double getUnitPrice() {
         return unitPrice;
-    }    
+    }
+
 }

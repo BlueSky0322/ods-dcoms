@@ -5,7 +5,8 @@
  */
 package UserInterface;
 
-import Class.Customer;
+import Class.User;
+import Enum.Role;
 import RMIConnections.Client;
 import javax.swing.JOptionPane;
 
@@ -148,8 +149,8 @@ public class LoginForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
-        String username = this.usernameInput.getText();
-        String password = new String(this.passwordInput.getPassword());
+        String username = this.usernameInput.getText().trim();
+        String password = new String(this.passwordInput.getPassword()).trim();
 
         if (username.isBlank() || password.isBlank()) {
             JOptionPane.showMessageDialog(null, "Input fields cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
@@ -157,14 +158,19 @@ public class LoginForm extends javax.swing.JFrame {
         }
         
         try {
-            Client.Object.login(new Customer(username, password));
+            User user = Client.Object.login(new User(username, password));
             JOptionPane.showMessageDialog(null, "User has succesfully logged in!");            
          
             usernameInput.setText("");
             passwordInput.setText("");
-            
-        // redirect user to home page
-//            dispose();
+
+        if (user.getRole().equals(Role.CUSTOMER)) {
+            new CustomerPlaceholder().setVisible(true);
+        } else {
+            new AdminMainMenuForm().setVisible(true);
+        }
+        
+        dispose();            
         } catch (Exception e) {
                 JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
         }

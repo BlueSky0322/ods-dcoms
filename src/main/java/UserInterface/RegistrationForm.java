@@ -5,7 +5,7 @@
  */
 package UserInterface;
 
-import Class.Customer;
+import Class.User;
 import Class.utils.Auth;
 import RMIConnections.Client;
 import javax.swing.JOptionPane;
@@ -245,17 +245,22 @@ public class RegistrationForm extends javax.swing.JFrame {
     }//GEN-LAST:event_backToLoginButtonActionPerformed
 
     private void registerButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_registerButtonActionPerformed
-        String firstName = this.firstNameInput.getText();
-        String lastName = this.lastNameInput.getText();
-        String username = usernameInput.getText();
-        String passportNumber = passportNumberInput.getText();
-        String password = new String(passwordInput.getPassword());
-        String confirmPassword = new String(confirmPasswordInput.getPassword());
+        String firstName = this.firstNameInput.getText().trim();
+        String lastName = this.lastNameInput.getText().trim();
+        String username = usernameInput.getText().trim();
+        String passportNumber = passportNumberInput.getText().trim();
+        String password = new String(passwordInput.getPassword()).trim();
+        String confirmPassword = new String(confirmPasswordInput.getPassword()).trim();
         
         try {
             // check whether all input fields are filled
             if (!Auth.inputFieldsFilled(firstName, lastName, username, passportNumber, password, confirmPassword)) {
                 throw new Exception("All input fields are required!");
+            }
+            
+            // check if username contains letter
+            if (!Auth.usernameContainsLetters(username)) {
+                throw new Exception("Username should contain at least one letter!");
             }
             
             // check if username is valid
@@ -266,11 +271,6 @@ public class RegistrationForm extends javax.swing.JFrame {
             // check if username length is valid
             if (!Auth.isValidUsernameLength(username)) {
                 throw new Exception("Username should at least be 5-15 characters");
-            }
-            
-            // check if username contains letter
-            if (!Auth.usernameContainsLetters(username)) {
-                throw new Exception("Username should contain at least one letter!");
             }
             
             // check if passport number is valid
@@ -288,7 +288,7 @@ public class RegistrationForm extends javax.swing.JFrame {
                 throw new Exception("Password should at least be 8 characters!");
             }
             
-            Customer newCustomer = new Customer(username.toLowerCase(), password, firstName, lastName, passportNumber);
+            User newCustomer = new User(username.toLowerCase(), password, firstName, lastName, passportNumber);
             Client.Object.register(newCustomer);
             JOptionPane.showMessageDialog(null, "Account has successfully been registered!");
             
