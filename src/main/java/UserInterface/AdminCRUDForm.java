@@ -7,28 +7,36 @@ package UserInterface;
 import Class.Item;
 import Class.utils.Auth;
 import RMIConnections.Client;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author ryann
  */
-public class AddItemForm extends javax.swing.JFrame {
+public class AdminCRUDForm extends javax.swing.JFrame {
 
     /**
      * Creates new form AddItemForm
      */
-    public AddItemForm() {
+    public AdminCRUDForm() {
         initComponents();
-        try {
-            DefaultTableModel model = Client.Object.displayTable();
-            viewItemTable.setModel(model);
-        } catch (Exception ex) {
-            Logger.getLogger(AddItemForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        refresh();
+
+        // disable all CRUD buttons
+        editButton.setEnabled(false);
+        addButton.setEnabled(false);
+        deleteButton.setEnabled(false);
+
+        // add document listener object to track input field events
+        initialiseInputFieldListener();
     }
 
     /**
@@ -60,7 +68,7 @@ public class AddItemForm extends javax.swing.JFrame {
         viewItemPanel = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         viewItemTable = new javax.swing.JTable();
-        updateTableButton = new javax.swing.JButton();
+        refreshButton = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -301,17 +309,12 @@ public class AddItemForm extends javax.swing.JFrame {
                 return types [columnIndex];
             }
         });
-        jScrollPane1.setViewportView(viewItemTable);
-
-        updateTableButton.setBackground(new java.awt.Color(255, 255, 255));
-        updateTableButton.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
-        updateTableButton.setForeground(new java.awt.Color(51, 51, 51));
-        updateTableButton.setText("Update Table");
-        updateTableButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                updateTableButtonActionPerformed(evt);
+        viewItemTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                viewItemTableMouseClicked(evt);
             }
         });
+        jScrollPane1.setViewportView(viewItemTable);
 
         javax.swing.GroupLayout viewItemPanelLayout = new javax.swing.GroupLayout(viewItemPanel);
         viewItemPanel.setLayout(viewItemPanelLayout);
@@ -320,19 +323,23 @@ public class AddItemForm extends javax.swing.JFrame {
             .addGroup(viewItemPanelLayout.createSequentialGroup()
                 .addComponent(jScrollPane1)
                 .addContainerGap())
-            .addGroup(viewItemPanelLayout.createSequentialGroup()
-                .addGap(233, 233, 233)
-                .addComponent(updateTableButton, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         viewItemPanelLayout.setVerticalGroup(
             viewItemPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(viewItemPanelLayout.createSequentialGroup()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)
-                .addComponent(updateTableButton)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        refreshButton.setBackground(new java.awt.Color(255, 255, 255));
+        refreshButton.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
+        refreshButton.setForeground(new java.awt.Color(51, 51, 51));
+        refreshButton.setText("Refresh");
+        refreshButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -344,6 +351,8 @@ public class AddItemForm extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(refreshButton)
+                        .addGap(18, 18, 18)
                         .addComponent(cancelButton))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -360,7 +369,8 @@ public class AddItemForm extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(cancelButton))
+                    .addComponent(cancelButton)
+                    .addComponent(refreshButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
@@ -394,8 +404,6 @@ public class AddItemForm extends javax.swing.JFrame {
         String unitPrice = this.unitPriceInput.getText();
         String stockAmount = this.stockAmountInput.getText();
 
-        double price = Double.parseDouble(unitPrice);
-        int quantity = Integer.parseInt(stockAmount);
         try {
             // check whether all input fields are filled
             if (!Auth.inputFieldsFilled(itemName, unitPrice, stockAmount)) {
@@ -404,21 +412,20 @@ public class AddItemForm extends javax.swing.JFrame {
             if (!Auth.isValidItemName(itemName)) {
                 throw new Exception("Name must contain at least 5-25 characters.");
             }
-            if (!Auth.isValidUnitPrice(price)) {
+            if (!Auth.isValidUnitPrice(unitPrice)) {
                 throw new Exception("Price must contain value two decimals.");
             }
-            if (!Auth.isValidStockAmount(quantity)) {
-                throw new Exception("Enter a value between 1-9999.");
+            if (!Auth.isValidStockAmount(stockAmount)) {
+                throw new Exception("Stock Amount must be a value between 1-9999.");
             }
 
-            Item newItem = new Item(itemName, price, quantity);
+            // adding the item
+            Item newItem = new Item(itemName, Double.parseDouble(unitPrice), Integer.parseInt(stockAmount));
             Client.Object.addItem(newItem);
-            JOptionPane.showMessageDialog(null, String.format("Item: %s\nUnit Price: %.2s\nStock Amount: %s \n\nItem successfully been added!", itemName, unitPrice, stockAmount));
+            JOptionPane.showMessageDialog(null, String.format("Item: %s\nUnit Price: %.2f\nStock Amount: %s \n\nItem successfully been added!", itemName, Double.parseDouble(unitPrice), Integer.parseInt(stockAmount)));
 
-            //reset input fields to empty
-            itemNameInput.setText("");
-            unitPriceInput.setText("");
-            stockAmountInput.setText("");
+            // reset fields, udpates table form, updates combo box
+            refresh();
 
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -427,30 +434,127 @@ public class AddItemForm extends javax.swing.JFrame {
     }//GEN-LAST:event_addButtonActionPerformed
 
     private void cancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cancelButtonActionPerformed
+        new AdminMainMenuForm().setVisible(true);
         dispose();
     }//GEN-LAST:event_cancelButtonActionPerformed
 
     private void searchButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchButtonActionPerformed
-        // TODO add your handling code here:
+        try {
+            // TODO add your handling code here:
+            String itemID = itemIDComboBox.getSelectedItem().toString();
+            Item selectedItem = Client.Object.retrieveItemByID(itemID);
+            itemNameInput.setText(selectedItem.getItemName());
+            unitPriceInput.setText(String.valueOf(selectedItem.getUnitPrice()));
+            stockAmountInput.setText(String.valueOf(selectedItem.getStockAmount()));
+            
+            DefaultTableModel tableModel = (DefaultTableModel) viewItemTable.getModel();
+            int rowIndex = -1;
+            for (int i = 0; i < tableModel.getRowCount(); i++) {
+                String tableItemId = tableModel.getValueAt(i, 0).toString();
+                if (tableItemId.equals(itemID)) {
+                    rowIndex = i;
+                    break;
+                }
+            }
+            if (rowIndex != -1) {
+                viewItemTable.setRowSelectionInterval(rowIndex, rowIndex);
+            }
+            
+        } catch (Exception ex) {
+            Logger.getLogger(AdminCRUDForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_searchButtonActionPerformed
 
     private void editButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editButtonActionPerformed
         // TODO add your handling code here:
+        // get current selected item from table model
+        DefaultTableModel model = (DefaultTableModel) viewItemTable.getModel();
+        int selectedRowIndex = viewItemTable.getSelectedRow();
+        if (selectedRowIndex == -1) {
+            JOptionPane.showMessageDialog(null, "Cannot update item that does exist. \nPlease add new item first.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        int itemID = (int) model.getValueAt(selectedRowIndex, 0);
+
+        String originalItemName = (String) model.getValueAt(selectedRowIndex, 1);
+        double originalUnitPrice = (double) model.getValueAt(selectedRowIndex, 2);
+        int originalStockAmount = (int) model.getValueAt(selectedRowIndex, 3);
+
+        String newItemName = this.itemNameInput.getText();
+        String newUnitPrice = this.unitPriceInput.getText();
+        String newStockAmount = this.stockAmountInput.getText();
+        //double newUnitPrice = Double.parseDouble(unitPriceInput.getText().trim());
+        //int newStockAmount = Integer.parseInt(this.stockAmountInput.getText().trim());
+
+        try {
+            // check whether all input fields are filled
+            if (!Auth.textFieldsFilled(itemNameInput, unitPriceInput, stockAmountInput)) {
+                throw new Exception("All input fields are required!");
+            }
+            if (!Auth.isValidItemName(newItemName)) {
+                throw new Exception("Name must contain at least 5-25 characters.");
+            }
+            if (!Auth.isValidUnitPrice(newUnitPrice)) {
+                throw new Exception("Price must contain value two decimals.");
+            }
+            if (!Auth.isValidStockAmount(newStockAmount)) {
+                throw new Exception("Stock Amount must be a value between 1-9999.");
+            }
+            if (!Auth.inputsChanged(newItemName, Double.parseDouble(newUnitPrice), Integer.parseInt(newStockAmount), originalItemName, originalUnitPrice, originalStockAmount)) {
+                throw new Exception("No changes have been made.");
+            }
+            // updating the item
+            Item newItem = new Item(newItemName, Double.parseDouble(unitPriceInput.getText().trim()), Integer.parseInt(stockAmountInput.getText().trim()));
+            Client.Object.updateItem(itemID, newItem);
+            JOptionPane.showMessageDialog(null, String.format("Item: %s\nUnit Price: %.2f\nStock Amount: %s \n\nChanges successfully been added!", newItemName, Double.parseDouble(newUnitPrice), Integer.parseInt(newStockAmount)));
+
+            // reset fields
+            refresh();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println(e.getMessage());
+        }
     }//GEN-LAST:event_editButtonActionPerformed
 
     private void deleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteButtonActionPerformed
         // TODO add your handling code here:
+        String itemName = this.itemNameInput.getText().trim();
+        String unitPrice = this.unitPriceInput.getText().trim();
+        String stockAmount = this.stockAmountInput.getText().trim();
+
+        try {
+
+            int confirm = JOptionPane.showConfirmDialog(null, String.format("Are you sure you want to delete item '%s'?", itemName), "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                Item itemToDelete = new Item(itemName, Double.parseDouble(unitPrice), Integer.parseInt(stockAmount));
+                Client.Object.deleteItem(itemToDelete);
+                JOptionPane.showMessageDialog(null, String.format("Item '%s' successfully deleted!", itemName));
+
+                // reset fields, udpates table form, updates combo box
+                refresh();
+            }
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            System.out.println(e.getMessage());
+        }
     }//GEN-LAST:event_deleteButtonActionPerformed
 
-    private void updateTableButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_updateTableButtonActionPerformed
-        try {
-            DefaultTableModel model = Client.Object.displayTable();
-            viewItemTable.setModel(model);
-        } catch (Exception ex) {
-            Logger.getLogger(AddItemForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    private void refreshButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshButtonActionPerformed
+        // TODO add your handling code here:
+        // reset fields, udpates table form, updates combo box
+        refresh();
+    }//GEN-LAST:event_refreshButtonActionPerformed
 
-    }//GEN-LAST:event_updateTableButtonActionPerformed
+    private void viewItemTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_viewItemTableMouseClicked
+        DefaultTableModel model = (DefaultTableModel) viewItemTable.getModel();
+        int selectedRowIndex = viewItemTable.getSelectedRow();
+
+        itemNameInput.setText(model.getValueAt(selectedRowIndex, 1).toString());
+        unitPriceInput.setText(model.getValueAt(selectedRowIndex, 2).toString());
+        stockAmountInput.setText(model.getValueAt(selectedRowIndex, 3).toString());
+    }//GEN-LAST:event_viewItemTableMouseClicked
 
     /**
      * @param args the command line arguments
@@ -469,22 +573,95 @@ public class AddItemForm extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AddItemForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AdminCRUDForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AddItemForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AdminCRUDForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AddItemForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AdminCRUDForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(AddItemForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(AdminCRUDForm.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        //</editor-fold>
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new AddItemForm().setVisible(true);
+                new AdminCRUDForm().setVisible(true);
             }
         });
+    }
+
+    private void refresh() {
+        loadTable();
+        loadComboBox();
+
+        //reset input fields to empty
+        itemNameInput.setText("");
+        unitPriceInput.setText("");
+        stockAmountInput.setText("");
+
+        // replaces cursor at item name field
+        itemNameInput.requestFocus();
+    }
+
+    private void loadTable() {
+        try {
+            DefaultTableModel model = Client.Object.viewItem();
+            viewItemTable.setModel(model);
+        } catch (Exception ex) {
+            Logger.getLogger(AdminCRUDForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void loadComboBox() {
+        try {
+            ArrayList<String> itemIDs = Client.Object.retrieveAllItemID();
+            itemIDComboBox.removeAllItems();
+            for (String itemID : itemIDs) {
+                itemIDComboBox.addItem(itemID);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(AdminCRUDForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    // listener to track events from fields
+    private void initialiseInputFieldListener() {
+        DocumentListener listener = new DocumentListener() {
+
+            private void updateButtonState() {
+                boolean inputsFilled = Auth.textFieldsFilled(itemNameInput, unitPriceInput, stockAmountInput);
+                boolean isValidName = Auth.isValidItemName(itemNameInput.getText());
+                boolean isValidPrice = Auth.isValidUnitPrice(unitPriceInput.getText());
+                boolean isValidStock = Auth.isValidStockAmount(stockAmountInput.getText());
+
+                addButton.setEnabled(inputsFilled);
+                editButton.setEnabled(inputsFilled && isValidName && isValidPrice && isValidStock);
+                deleteButton.setEnabled(inputsFilled && isValidName && isValidPrice && isValidStock);
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateButtonState();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateButtonState();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                updateButtonState();
+            }
+
+        };
+        itemNameInput.getDocument().addDocumentListener(listener);
+        unitPriceInput.getDocument().addDocumentListener(listener);
+        stockAmountInput.getDocument().addDocumentListener(listener);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -502,11 +679,11 @@ public class AddItemForm extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JButton refreshButton;
     private javax.swing.JButton searchButton;
     private javax.swing.JPanel searchItemPanel;
     private javax.swing.JTextField stockAmountInput;
     private javax.swing.JTextField unitPriceInput;
-    private javax.swing.JButton updateTableButton;
     private javax.swing.JPanel viewItemPanel;
     private javax.swing.JTable viewItemTable;
     // End of variables declaration//GEN-END:variables
