@@ -7,15 +7,11 @@ import Class.utils.Hasher;
 import Enum.Role;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.sql.Array;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JComboBox;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class Server extends UnicastRemoteObject implements Interface {
@@ -144,27 +140,7 @@ public class Server extends UnicastRemoteObject implements Interface {
     }
 
     @Override
-    public void updateItem(int itemID, Item updatedItem) throws Exception {
-        String query;
-        PreparedStatement ps;
-
-        query = """
-                UPDATE ITEM SET item_name = ?, unit_price=?, stock_amount=?
-                WHERE item_id=?
-                """;
-        ps = DerbyDB.preparedStatement(query);
-        ps.setString(1, updatedItem.getItemName());
-        ps.setDouble(2, updatedItem.getUnitPrice());
-        ps.setInt(3, updatedItem.getStockAmount());
-        ps.setInt(4, itemID);
-
-        int rowsInserted = ps.executeUpdate();
-        System.out.println(rowsInserted + " rows inserted.");
-        DerbyDB.commit();
-    }
-
-    @Override
-    public DefaultTableModel viewItem() {
+    public DefaultTableModel displayTable() {
         ResultSet rs;
         String[] columnNames = {"ID", "Item Name", "Unit Price", "Stock Amount"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
@@ -191,97 +167,4 @@ public class Server extends UnicastRemoteObject implements Interface {
         return model;
     }
 
-    @Override
-    public void deleteItem(Item currentItem) throws Exception {
-        String query;
-        PreparedStatement ps;
-        ResultSet rs;
-
-        // check if item exists
-        query = """
-                SELECT COUNT(*) FROM ITEM
-                WHERE item_name = ? AND unit_price = ? AND stock_amount = ?
-                """;
-
-        ps = DerbyDB.preparedStatement(query);
-        ps.setString(1, currentItem.getItemName());
-        ps.setDouble(2, currentItem.getUnitPrice());
-        ps.setInt(3, currentItem.getStockAmount());
-
-        rs = ps.executeQuery();
-        if (rs.next()) {
-            int count = rs.getInt(1);
-            // count < 0 indicates item does not exist in database
-            if (count == 0) {
-                throw new Exception("Cannot delete item that does not exist!");
-            }
-        }
-
-        // delete item
-        query = """
-                    DELETE FROM ITEM
-                    WHERE item_name=?
-                    """;
-
-        ps = DerbyDB.preparedStatement(query);
-        ps.setString(1, currentItem.getItemName());
-
-        int rowsInserted = ps.executeUpdate();
-        System.out.println(rowsInserted + " rows removed.");
-
-        DerbyDB.commit();
-    }
-
-    @Override
-    public ArrayList<String> retrieveAllItemID() throws Exception {
-        String query;
-        PreparedStatement ps;
-        ResultSet rs;
-        ArrayList<String> itemIDs = new ArrayList<>();
-
-        // get items
-        query = """
-                SELECT item_id from ITEM    
-                """;
-
-        ps = DerbyDB.preparedStatement(query);
-        rs = ps.executeQuery();
-
-        while (rs.next()) {
-            String itemID = rs.getString(1);
-            itemIDs.add(itemID);
-        }
-
-        DerbyDB.commit();
-
-        return itemIDs;
-    }
-
-    @Override
-    public Item retrieveItemByID(String itemID) throws Exception {
-        String query;
-        PreparedStatement ps;
-        ResultSet rs;
-        Item item = null;
-        // get items
-        query = """
-                SELECT * from ITEM
-                WHERE item_id = ?
-                """;
-
-        ps = DerbyDB.preparedStatement(query);
-        ps.setString(1, itemID);
-        rs = ps.executeQuery();
-
-        while (rs.next()) {
-            String name = rs.getString(2);
-            double price = rs.getDouble(3);
-            int stock = rs.getInt(4);
-            item = new Item(name, price, stock);
-        }
-
-        DerbyDB.commit();
-
-        return item;
-    }
 }
