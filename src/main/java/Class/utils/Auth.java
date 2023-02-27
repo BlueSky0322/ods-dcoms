@@ -4,6 +4,14 @@
  */
 package Class.utils;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JTextField;
+
 /**
  *
  * @author handikaharianto
@@ -13,6 +21,15 @@ public class Auth {
     public static boolean inputFieldsFilled(String... inputs) {
         for (String input : inputs) {
             if (input.isBlank()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static boolean textFieldsFilled(JTextField... textFields) {
+        for (JTextField textField : textFields) {
+            if (textField == null || textField.getText().trim().isEmpty()) {
                 return false;
             }
         }
@@ -53,18 +70,28 @@ public class Auth {
         return itemName.matches("^[\\w\\s\\d]{5,25}$");
     }
 
-    public static boolean isValidUnitPrice(double unitPrice) {
-        // accept double with maximum 2 decimal points
+    public static boolean isValidUnitPrice(String unitPrice) {
         try {
-            return Math.abs(unitPrice - Math.floor(unitPrice)) == 0.0 || String.valueOf(unitPrice).matches("^\\d+\\.\\d{2}$");
+            double price = Double.parseDouble(unitPrice);
+            DecimalFormat df = new DecimalFormat("#.##");
+            return Double.parseDouble(df.format(price)) == price;
         } catch (NumberFormatException e) {
             return false;
         }
     }
 
-    public static boolean isValidStockAmount(int stockAmount) {
+    public static boolean isValidStockAmount(String stockAmount) {
         // accept any int with maximum 4 digits (1-9999)
-        return stockAmount > 0 && stockAmount < 10000;
+        try {
+            int amount = Integer.parseInt(stockAmount);
+            return amount > 0 && amount < 10000;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    public static boolean inputsChanged(String currentName, double currentPrice, int currentStock, String originalName, double originalPrice, int originalStock) {
+        return !currentName.equals(originalName) || currentPrice != originalPrice || currentStock != originalStock;
     }
 
 }
