@@ -65,7 +65,7 @@ public class DerbyDB {
                 System.out.println("Table 'Item' created successfully.");
                 commit();
             } else {
-                System.out.println("Table 'Item' already exists.");
+                System.out.println("Table 'Item' already exists. No new table will be created.");
             }
         } catch (SQLException ex) {
             System.out.println("Error creating/checking table: " + ex.getMessage());
@@ -91,7 +91,7 @@ public class DerbyDB {
                 System.out.println("Table 'OdsUser' created successfully.");
                 commit();
             } else {
-                System.out.println("Table 'OdsUser' already exists.");
+                System.out.println("Table 'OdsUser' already exists. No new table will be created.");
             }
         } catch (SQLException ex) {
             System.out.println("Error creating/checking table: " + ex.getMessage());
