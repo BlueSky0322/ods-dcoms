@@ -1,7 +1,7 @@
 package Main;
 
 import RMIConnections.Client;
-import UserInterface.AddItemForm;
+import UserInterface.AdminCRUDForm;
 import UserInterface.LoginForm;
 
 /*
@@ -19,7 +19,7 @@ public class App {
         Client client = new Client();
         
         //new LoginForm().setVisible(true);
-        new AddItemForm().setVisible(true);
+        new AdminCRUDForm().setVisible(true);
         
     }
 }
