@@ -10,6 +10,7 @@ import java.rmi.server.UnicastRemoteObject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
@@ -140,7 +141,7 @@ public class Server extends UnicastRemoteObject implements Interface {
     }
 
     @Override
-    public DefaultTableModel displayTable() {
+    public DefaultTableModel viewTable() {
         ResultSet rs;
         String[] columnNames = {"ID", "Item Name", "Unit Price", "Stock Amount"};
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
@@ -165,6 +166,120 @@ public class Server extends UnicastRemoteObject implements Interface {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
         return model;
+    }
+
+    @Override
+    public void updateItem(int itemId, Item updatedItem) throws Exception {
+        String query;
+        PreparedStatement ps;
+        ResultSet result;
+
+        query = """
+                UPDATE ITEM SET item_name = ?, unit_price=?, stock_amount=?
+                WHERE item_id=?
+                """;
+        ps = DerbyDB.preparedStatement(query);
+        ps.setString(1, updatedItem.getItemName());
+        ps.setDouble(2, updatedItem.getUnitPrice());
+        ps.setInt(3, updatedItem.getStockAmount());
+        ps.setInt(4, itemId);
+
+        int rowsUpdated = ps.executeUpdate();
+        System.out.println(rowsUpdated + " rows updated.");
+        DerbyDB.commit();
+    }
+
+    @Override
+    public void deleteItem(Item currentItem) throws Exception {
+        String query;
+        PreparedStatement ps;
+        ResultSet rs;
+
+        query = """
+                SELECT COUNT(*) FROM ITEM 
+                WHERE item_name = ? AND unit_price = ? AND stock_amount = ?
+                """;
+        ps = DerbyDB.preparedStatement(query);
+        ps.setString(1, currentItem.getItemName());
+        ps.setDouble(2, currentItem.getUnitPrice());
+        ps.setInt(3, currentItem.getStockAmount());
+
+        rs = ps.executeQuery();
+
+        // if item does not exist
+        if (!rs.next()) {
+            throw new Exception("Cannot delete item that does not exist!");
+        }
+        int count = rs.getInt(1);
+        if (count == 0) {
+            throw new Exception("Cannot delete item that does not exist!");
+        }
+
+        query = """
+                DELETE FROM ITEM
+                WHERE item_name = ? AND unit_price = ? AND stock_amount = ?
+                """;
+        ps = DerbyDB.preparedStatement(query);
+        ps.setString(1, currentItem.getItemName());
+        ps.setDouble(2, currentItem.getUnitPrice());
+        ps.setInt(3, currentItem.getStockAmount());
+        int rowsDeleted = ps.executeUpdate();
+        System.out.println(rowsDeleted + " rows deleted.");
+        DerbyDB.commit();
+    }
+
+    @Override
+    public Item retrieveItemByID(String itemID) throws Exception {
+        String query;
+        PreparedStatement ps;
+        ResultSet rs;
+        Item item = null;
+
+        // get items
+        query = """
+            SELECT * from ITEM
+            WHERE item_id = ?
+            """;
+
+        ps = DerbyDB.preparedStatement(query);
+        ps.setString(1, itemID);
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+            String name = rs.getString(2);
+            double price = rs.getDouble(3);
+            int stock = rs.getInt(4);
+            item = new Item(name, price, stock);
+        }
+
+        DerbyDB.commit();
+
+        return item;
+    }
+
+    @Override
+    public ArrayList<String> retrieveAllItemID() throws Exception {
+        String query;
+        PreparedStatement ps;
+        ResultSet rs;
+        ArrayList<String> itemIDs = new ArrayList<>();
+
+        // get items
+        query = """
+                SELECT item_id from ITEM
+                """;
+
+        ps = DerbyDB.preparedStatement(query);
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+            String itemID = rs.getString(1);
+            itemIDs.add(itemID);
+        }
+
+        DerbyDB.commit();
+
+        return itemIDs;
     }
 
 }
