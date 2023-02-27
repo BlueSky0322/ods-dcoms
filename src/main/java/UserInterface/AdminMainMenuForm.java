@@ -56,7 +56,7 @@ public class AdminMainMenuForm extends javax.swing.JFrame {
         crudButton.setBackground(new java.awt.Color(255, 255, 255));
         crudButton.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
         crudButton.setForeground(new java.awt.Color(0, 0, 0));
-        crudButton.setText("CRUD Functions");
+        crudButton.setText("Item Information");
         crudButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 crudButtonActionPerformed(evt);
@@ -96,7 +96,7 @@ public class AdminMainMenuForm extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(74, 74, 74)
                         .addComponent(jLabel1)))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -116,12 +116,8 @@ public class AdminMainMenuForm extends javax.swing.JFrame {
     }//GEN-LAST:event_genReportButtonActionPerformed
 
     private void crudButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crudButtonActionPerformed
-        try {
-            // TODO add your handling code here:
-            new AddItemForm().setVisible(true);
-        } catch (Exception ex) {
-            Logger.getLogger(AdminMainMenuForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        // TODO add your handling code here:
+        new AdminCRUDForm().setVisible(true);
     }//GEN-LAST:event_crudButtonActionPerformed
 
     /**
