@@ -5,10 +5,15 @@ import Class.Item;
 import Class.utils.DerbyDB;
 import Class.utils.Hasher;
 import Enum.Role;
+import java.lang.System.Logger;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import javax.swing.table.DefaultTableModel;
+
 
 public class Server extends UnicastRemoteObject implements Interface {
 
@@ -134,4 +139,9 @@ public class Server extends UnicastRemoteObject implements Interface {
         System.out.println(rowsInserted + " rows inserted.");
         DerbyDB.commit();
     }
+    
+    
+    
+    
+    
 }

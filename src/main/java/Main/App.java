@@ -3,6 +3,7 @@ package Main;
 import RMIConnections.Client;
 import UserInterface.AddItemForm;
 import UserInterface.LoginForm;
+import UserInterface.CustomerPlaceOrderForm;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -18,6 +19,8 @@ public class App {
         System.out.println("Connection established with server.");
         Client client = new Client();
         
-        new LoginForm().setVisible(true);
+        
+        new LoginForm().setVisible(false);
+        new CustomerPlaceOrderForm().setVisible(true);
     }
 }

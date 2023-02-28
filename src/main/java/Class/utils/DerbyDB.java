@@ -33,6 +33,7 @@ public class DerbyDB {
             //initialise all tables
             initialiseItemTable(createStatement());
             initialiseCustomerTable(createStatement());
+            initialiseOrderTable(createStatement());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -101,13 +102,14 @@ public class DerbyDB {
     }
     
     public static void initialiseOrderTable(Statement stmt) throws SQLException {
-        String createOrderTableQuery;
+        String createCustomerOrderTableQuery;
         ResultSet rs;
         try {
-            rs = dbConnection.getMetaData().getTables(null, null, "ITEM", null);
+            rs = dbConnection.getMetaData().getTables(null, null, "CUSTOMERORDER", null);
+            System.out.println("Hey");
             if (!rs.next()) {
-                createOrderTableQuery
-                        = "CREATE TABLE Order ("
+                createCustomerOrderTableQuery
+                        = "CREATE TABLE CustomerOrder ("
                         + "receipt_no INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
                         + "order_date TIMESTAMP NOT NULL,"
                         + "customer_name VARCHAR(255) NOT NULL,"
@@ -118,9 +120,10 @@ public class DerbyDB {
                         + "order_totalprice DECIMAL(10,2) NOT NULL,"
                         + "payment_type VARCHAR(40) NOT NULL,"
                         + "payment_time TIMESTAMP NOT NULL)";
-                stmt.executeUpdate(createOrderTableQuery);
-                System.out.println("Table 'Order' created successfully.");
+                stmt.executeUpdate(createCustomerOrderTableQuery);
+                System.out.println("Table 'Customer Order Table' created successfully.");
                 commit();
+                System.out.println("Hello");
             } else {
                 System.out.println("Table 'Order' already exists.");
             }
