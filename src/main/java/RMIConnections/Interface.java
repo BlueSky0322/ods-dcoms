@@ -3,9 +3,7 @@ package RMIConnections;
 import Class.User;
 import Class.Item;
 import java.rmi.*;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 /**
