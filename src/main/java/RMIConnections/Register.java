@@ -1,9 +1,13 @@
 package RMIConnections;
 
 import Class.utils.DerbyDB;
+import static Class.utils.DerbyDB.createStatement;
+import static Class.utils.DerbyDB.initialiseCustomerTable;
+import static Class.utils.DerbyDB.initialiseItemTable;
 import java.rmi.*;
 import java.rmi.registry.*;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 //solely used to register port number, essentially creating a socket connection between server and client
 public class Register {

@@ -19,7 +19,8 @@
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
-            <version>1.15</version>
+            <version>1.11</version>
+            <type>jar</type>
         </dependency>
     </dependencies>
     <properties>

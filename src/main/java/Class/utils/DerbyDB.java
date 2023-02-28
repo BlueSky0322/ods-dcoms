@@ -10,8 +10,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -29,7 +27,6 @@ public class DerbyDB {
             dbConnection = DriverManager.getConnection(DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
             dbConnection.setAutoCommit(false);
             System.out.println("Database is running...");
-            System.out.println("Checking tables...");
             //initialise all tables
             initialiseItemTable(createStatement());
             initialiseCustomerTable(createStatement());
@@ -52,6 +49,10 @@ public class DerbyDB {
         dbConnection.commit();
     }
 
+    public static void close() throws SQLException {
+        dbConnection.close();
+    }
+
     public static void initialiseItemTable(Statement stmt) throws SQLException {
         String createItemTableQuery;
         ResultSet rs;
@@ -67,19 +68,31 @@ public class DerbyDB {
                 stmt.executeUpdate(createItemTableQuery);
                 System.out.println("Table 'Item' created successfully.");
                 commit();
+
+                // Insert static values
+                String insertValuesQuery = "INSERT INTO Item (item_name, unit_price, stock_amount) "
+                        + "VALUES "
+                        + "('T-Shirt', 15.99, 50), "
+                        + "('Sneakers', 89.99, 25), "
+                        + "('Jeans', 29.99, 75), "
+                        + "('Hoodie', 35.99, 30), "
+                        + "('Backpack', 49.99, 20)";
+                stmt.executeUpdate(insertValuesQuery);
+                System.out.println("Static values added to 'Item' table.");
+                commit();
             } else {
-                System.out.println("Table 'Item' already exists.");
+                System.out.println("Table 'Item' already exists. No new table created.");
             }
         } catch (SQLException ex) {
             System.out.println("Error creating/checking table: " + ex.getMessage());
         }
     }
 
-    public static void initialiseCustomerTable(Statement stmt) {
+    public static void initialiseCustomerTable(Statement stmt) throws SQLException {
         String createCustomerTableQuery;
         ResultSet rs;
         try {
-            rs = dbConnection.getMetaData().getTables(null, null, "CUSTOMER", null);
+            rs = dbConnection.getMetaData().getTables(null, null, "ODSUSER", null);
             if (!rs.next()) {
                 createCustomerTableQuery
                         = "CREATE TABLE OdsUser ("
@@ -91,16 +104,16 @@ public class DerbyDB {
                         + "passport VARCHAR(9) NOT NULL UNIQUE,"
                         + "role VARCHAR(20) NOT NULL)";
                 stmt.executeUpdate(createCustomerTableQuery);
-                System.out.println("Table 'Customer' created successfully.");
+                System.out.println("Table 'OdsUser' created successfully.");
                 commit();
             } else {
-                System.out.println("Table 'Customer' already exists.");
+                System.out.println("Table 'OdsUser' already exists. No new table created.");
             }
         } catch (SQLException ex) {
             System.out.println("Error creating/checking table: " + ex.getMessage());
         }
     }
-    
+
     public static void initialiseOrderTable(Statement stmt) throws SQLException {
         String createCustomerOrderTableQuery;
         ResultSet rs;
@@ -125,7 +138,7 @@ public class DerbyDB {
                 commit();
                 System.out.println("Hello");
             } else {
-                System.out.println("Table 'Order' already exists.");
+                System.out.println("Table 'Order' already exists. No new table created.");
             }
         } catch (SQLException ex) {
             System.out.println("Error creating/checking table: " + ex.getMessage());

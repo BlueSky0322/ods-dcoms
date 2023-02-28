@@ -56,42 +56,33 @@ public class RegistrationForm extends javax.swing.JFrame {
 
         jLabel1.setBackground(new java.awt.Color(255, 255, 255));
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 36)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("ODS Registration Page");
 
         jLabel2.setBackground(new java.awt.Color(255, 255, 255));
         jLabel2.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("First Name:");
 
         jLabel3.setBackground(new java.awt.Color(255, 255, 255));
         jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("Last Name:");
 
         jLabel4.setBackground(new java.awt.Color(255, 255, 255));
         jLabel4.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Passport number:");
 
         jLabel5.setBackground(new java.awt.Color(255, 255, 255));
         jLabel5.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("Password:");
 
         jLabel6.setBackground(new java.awt.Color(255, 255, 255));
         jLabel6.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
         jLabel6.setText("Confirm Password:");
 
         jLabel7.setBackground(new java.awt.Color(255, 255, 255));
         jLabel7.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
         jLabel7.setText("Username");
 
-        registerButton.setBackground(new java.awt.Color(255, 255, 255));
         registerButton.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        registerButton.setForeground(new java.awt.Color(0, 0, 0));
         registerButton.setText("Register");
         registerButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         registerButton.setPreferredSize(new java.awt.Dimension(100, 35));
@@ -101,9 +92,7 @@ public class RegistrationForm extends javax.swing.JFrame {
             }
         });
 
-        backToLoginButton.setBackground(new java.awt.Color(255, 255, 255));
         backToLoginButton.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        backToLoginButton.setForeground(new java.awt.Color(0, 0, 0));
         backToLoginButton.setText("Back to Login");
         backToLoginButton.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         backToLoginButton.addActionListener(new java.awt.event.ActionListener() {
@@ -112,41 +101,28 @@ public class RegistrationForm extends javax.swing.JFrame {
             }
         });
 
-        firstNameInput.setBackground(new java.awt.Color(255, 255, 255));
         firstNameInput.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        firstNameInput.setForeground(new java.awt.Color(0, 0, 0));
         firstNameInput.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         firstNameInput.setCursor(new java.awt.Cursor(java.awt.Cursor.TEXT_CURSOR));
 
-        lastNameInput.setBackground(new java.awt.Color(255, 255, 255));
         lastNameInput.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        lastNameInput.setForeground(new java.awt.Color(0, 0, 0));
         lastNameInput.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        usernameInput.setBackground(new java.awt.Color(255, 255, 255));
         usernameInput.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        usernameInput.setForeground(new java.awt.Color(0, 0, 0));
         usernameInput.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        passportNumberInput.setBackground(new java.awt.Color(255, 255, 255));
         passportNumberInput.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        passportNumberInput.setForeground(new java.awt.Color(0, 0, 0));
         passportNumberInput.setToolTipText("");
         passportNumberInput.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        passwordInput.setBackground(new java.awt.Color(255, 255, 255));
         passwordInput.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        passwordInput.setForeground(new java.awt.Color(0, 0, 0));
         passwordInput.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        confirmPasswordInput.setBackground(new java.awt.Color(255, 255, 255));
         confirmPasswordInput.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
-        confirmPasswordInput.setForeground(new java.awt.Color(0, 0, 0));
         confirmPasswordInput.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         jLabel8.setBackground(new java.awt.Color(255, 255, 255));
         jLabel8.setFont(new java.awt.Font("Helvetica Neue", 0, 14)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
         jLabel8.setText("(e.g. X00000000)");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -181,7 +157,7 @@ public class RegistrationForm extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(314, 314, 314)
                         .addComponent(jLabel1)))
-                .addContainerGap(273, Short.MAX_VALUE))
+                .addContainerGap(274, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
