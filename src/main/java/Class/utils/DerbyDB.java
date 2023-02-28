@@ -67,9 +67,21 @@ public class DerbyDB {
                 stmt.executeUpdate(createItemTableQuery);
                 System.out.println("Table 'Item' created successfully.");
                 commit();
+
+                // Insert static values
+                String insertValuesQuery = "INSERT INTO Item (item_name, unit_price, stock_amount) "
+                        + "VALUES "
+                        + "('T-Shirt', 15.99, 50), "
+                        + "('Sneakers', 89.99, 25), "
+                        + "('Jeans', 29.99, 75), "
+                        + "('Hoodie', 35.99, 30), "
+                        + "('Backpack', 49.99, 20)";
+                stmt.executeUpdate(insertValuesQuery);
+                System.out.println("Static values added to 'Item' table.");
+                commit();
             } else {
                 System.out.println("Table 'Item' already exists. No new table created.");
-            } 
+            }
         } catch (SQLException ex) {
             System.out.println("Error creating/checking table: " + ex.getMessage());
         }
@@ -95,7 +107,7 @@ public class DerbyDB {
                 commit();
             } else {
                 System.out.println("Table 'OdsUser' already exists. No new table created.");
-            } 
+            }
         } catch (SQLException ex) {
             System.out.println("Error creating/checking table: " + ex.getMessage());
         }
