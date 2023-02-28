@@ -7,6 +7,8 @@ package UserInterface;
 import Class.Item;
 import Class.utils.Auth;
 import RMIConnections.Client;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -67,6 +69,11 @@ public class AdminCRUDForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         itemInformationPanel.setBackground(new java.awt.Color(255, 255, 255));
         itemInformationPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Item Information", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Segoe UI", 0, 12), new java.awt.Color(0, 0, 0))); // NOI18N
@@ -498,7 +505,7 @@ public class AdminCRUDForm extends javax.swing.JFrame {
             }
             // creating the updated the item
             Item newItem = new Item(newItemName, Double.parseDouble(newUnitPrice), Integer.parseInt(newStockAmount));
-            
+
             // confirmation dialog for edit item
             int confirm = JOptionPane.showConfirmDialog(null, String.format("Are you sure you want to edit item '%s'?", newItemName), "Confirm Edit", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
@@ -555,6 +562,19 @@ public class AdminCRUDForm extends javax.swing.JFrame {
     private void itemIDComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_itemIDComboBoxActionPerformed
 
     }//GEN-LAST:event_itemIDComboBoxActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:        
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+        // Calculate the position of the form
+        int x = (screenSize.width - this.getWidth()) / 2;
+        int y = (screenSize.height - this.getHeight()) / 2;
+
+        // Set the position of the form
+        this.setLocation(x, y);
+        this.setSize(700, 650);
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
