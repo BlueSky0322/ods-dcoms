@@ -26,10 +26,10 @@ public class AdminCRUDForm extends javax.swing.JFrame {
      */
     public AdminCRUDForm() {
         initComponents();
-        
+
         // reset fields, udpate table contents, update combo box
         refresh();
-        
+
         // document listener to track events from input fields
         initialisedDocumentListener();
     }
@@ -422,7 +422,7 @@ public class AdminCRUDForm extends javax.swing.JFrame {
             Item newItem = new Item(itemName, Double.parseDouble(unitPrice), Integer.parseInt(stockAmount));
             Client.Object.addItem(newItem);
             JOptionPane.showMessageDialog(null, String.format("Item: %s\nUnit Price: %.2f\nStock Amount: %s \n\nItem successfully been added!", itemName, Double.parseDouble(unitPrice), Integer.parseInt(stockAmount)));
-            
+
             refresh();
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
@@ -443,7 +443,7 @@ public class AdminCRUDForm extends javax.swing.JFrame {
             this.itemNameInput.setText(selectedItem.getItemName());
             this.unitPriceInput.setText(String.valueOf(selectedItem.getUnitPrice()));
             this.stockAmountInput.setText(String.valueOf(selectedItem.getStockAmount()));
-            
+
             // highlight the corresponding row in the table
             DefaultTableModel tableModel = (DefaultTableModel) viewItemTable.getModel();
             int rowIndex = -1;
@@ -496,14 +496,18 @@ public class AdminCRUDForm extends javax.swing.JFrame {
             if (!Auth.inputsChanged(newItemName, Double.parseDouble(newUnitPrice), Integer.parseInt(newStockAmount), originalItemName, originalUnitPrice, originalStockAmount)) {
                 throw new Exception("No changes have been made.");
             }
-            // updating the item
+            // creating the updated the item
             Item newItem = new Item(newItemName, Double.parseDouble(newUnitPrice), Integer.parseInt(newStockAmount));
-            Client.Object.updateItem(itemID, newItem);
-            JOptionPane.showMessageDialog(null, String.format("Item: %s\nUnit Price: %.2f\nStock Amount: %s \n\nChanges successfully been added!", newItem.getItemName(), newItem.getUnitPrice(), newItem.getStockAmount()));
+            
+            // confirmation dialog for edit item
+            int confirm = JOptionPane.showConfirmDialog(null, String.format("Are you sure you want to edit item '%s'?", newItemName), "Confirm Edit", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                Client.Object.updateItem(itemID, newItem);
+                JOptionPane.showMessageDialog(null, String.format("Item: %s\nUnit Price: %.2f\nStock Amount: %s \n\nChanges successfully been added!", newItem.getItemName(), newItem.getUnitPrice(), newItem.getStockAmount()));
 
-            // reset fields, udpate table contents, update combo box
-            refresh();
-
+                // reset fields, udpate table contents, update combo box
+                refresh();
+            }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             System.out.println(e.getMessage());
@@ -515,12 +519,12 @@ public class AdminCRUDForm extends javax.swing.JFrame {
         String itemName = itemNameInput.getText().trim();
         double unitPrice = Double.parseDouble(unitPriceInput.getText().trim());
         int stockAmount = Integer.parseInt(stockAmountInput.getText().trim());
+        Item itemToDelete = new Item(itemName, unitPrice, stockAmount);
 
         try {
             int confirm = JOptionPane.showConfirmDialog(null, String.format("Are you sure you want to delete item '%s'?", itemName), "Confirm Deletion", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
-                // Delete the item
-                Item itemToDelete = new Item(itemName, unitPrice, stockAmount);
+                // Delete the item                
                 Client.Object.deleteItem(itemToDelete);
                 JOptionPane.showMessageDialog(null, String.format("Item '%s' successfully deleted!", itemName));
 
@@ -613,12 +617,11 @@ public class AdminCRUDForm extends javax.swing.JFrame {
     private void refresh() {
         loadTable();
         loadComboBox();
-        
-        
+
         addButton.setEnabled(false);
         editButton.setEnabled(false);
         deleteButton.setEnabled(false);
-        
+
         //reset input fields to empty
         itemNameInput.setText("");
         unitPriceInput.setText("");
