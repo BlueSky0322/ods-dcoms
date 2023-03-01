@@ -96,7 +96,7 @@ public class DerbyDB {
             if (!rs.next()) {
                 createCustomerTableQuery
                         = "CREATE TABLE OdsUser ("
-                        + "cust_id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
+                        + "user_id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
                         + "username VARCHAR(15) NOT NULL UNIQUE,"
                         + "password VARCHAR(255) NOT NULL,"
                         + "first_name VARCHAR(45) NOT NULL,"
