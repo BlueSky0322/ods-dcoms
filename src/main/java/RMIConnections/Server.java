@@ -20,6 +20,7 @@ public class Server extends UnicastRemoteObject implements Interface {
     public Server() throws RemoteException {
         super();
     }
+    
 
     @Override
     public void placeholderMethod() throws RemoteException {
@@ -147,9 +148,7 @@ public class Server extends UnicastRemoteObject implements Interface {
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         model.setRowCount(0);
         try {
-
             rs = DerbyDB.createStatement().executeQuery("SELECT * FROM ITEM");
-
             while (rs.next()) {
                 int itemID = rs.getInt("ITEM_ID");
                 String itemName = rs.getString("ITEM_NAME");
@@ -237,9 +236,9 @@ public class Server extends UnicastRemoteObject implements Interface {
 
         // get items
         query = """
-            SELECT * from ITEM
-            WHERE item_id = ?
-            """;
+                SELECT * from ITEM
+                WHERE item_id = ?
+                """;
 
         ps = DerbyDB.preparedStatement(query);
         ps.setString(1, itemID);
