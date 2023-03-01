@@ -27,6 +27,7 @@ public class DerbyDB {
             dbConnection = DriverManager.getConnection(DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
             dbConnection.setAutoCommit(false);
             System.out.println("Database is running...");
+            
             //initialise all tables
             initialiseItemTable(createStatement());
             initialiseCustomerTable(createStatement());
@@ -73,7 +74,7 @@ public class DerbyDB {
                         + "VALUES "
                         + "('T-Shirt', 15.99, 50), "
                         + "('Sneakers', 89.99, 25), "
-                        + "('Jeans', 29.99, 75), "
+                        + "('Jeans', 29.99, 75), "      
                         + "('Hoodie', 35.99, 30), "
                         + "('Backpack', 49.99, 20)";
                 stmt.executeUpdate(insertValuesQuery);
