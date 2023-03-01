@@ -36,6 +36,80 @@ public class AdminCRUDForm extends javax.swing.JFrame {
         initialisedDocumentListener();
     }
 
+    private void loadTable() {
+        try {
+            DefaultTableModel model = Client.Object.viewTable();
+            viewItemTable.setModel(model);
+        } catch (Exception ex) {
+            Logger.getLogger(AdminCRUDForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void loadComboBox() {
+        try {
+            // TODO add your handling code here:
+            itemIDComboBox.removeAllItems();
+            ArrayList<String> itemIDs = Client.Object.retrieveAllItemID();
+            for (String itemID : itemIDs) {
+                itemIDComboBox.addItem(itemID);
+            }
+        } catch (Exception ex) {
+            Logger.getLogger(AdminCRUDForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void refresh() {
+        loadTable();
+        loadComboBox();
+
+        addButton.setEnabled(false);
+        editButton.setEnabled(false);
+        deleteButton.setEnabled(false);
+
+        //reset input fields to empty
+        itemNameInput.setText("");
+        unitPriceInput.setText("");
+        stockAmountInput.setText("");
+
+        itemNameInput.requestFocus();
+    }
+
+    private void initialisedDocumentListener() {
+        DocumentListener inputListener = new DocumentListener() {
+            private void updateButtonState() {
+                boolean inputsFilled = Auth.textFieldsFilled(
+                        itemNameInput, unitPriceInput, stockAmountInput);
+                boolean isValidName = Auth.isValidItemName(itemNameInput.getText());
+                boolean isValidPrice = Auth.isValidUnitPrice(unitPriceInput.getText());
+                boolean isValidStock = Auth.isValidStockAmount(stockAmountInput.getText());
+
+                addButton.setEnabled(inputsFilled);
+                editButton.setEnabled(inputsFilled && isValidName && isValidPrice && isValidStock);
+                deleteButton.setEnabled(inputsFilled && isValidName && isValidPrice && isValidStock);
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                updateButtonState();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                updateButtonState();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                updateButtonState();
+            }
+
+        };
+
+        itemNameInput.getDocument().addDocumentListener(inputListener);
+        unitPriceInput.getDocument().addDocumentListener(inputListener);
+        stockAmountInput.getDocument().addDocumentListener(inputListener);
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -426,13 +500,20 @@ public class AdminCRUDForm extends javax.swing.JFrame {
                 throw new Exception("Stock Amount must be a value between 1-9999.");
             }
 
-            Item newItem = new Item(itemName, Double.parseDouble(unitPrice), Integer.parseInt(stockAmount));
-            Client.Object.addItem(newItem);
-            JOptionPane.showMessageDialog(null, String.format("Item: %s\nUnit Price: %.2f\nStock Amount: %s \n\nItem successfully been added!", itemName, Double.parseDouble(unitPrice), Integer.parseInt(stockAmount)));
+            int confirm = JOptionPane.showConfirmDialog(null, String.format("Are you sure you want to add item '%s'?", itemName), "Confirm Edit", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                Item newItem = new Item(
+                        itemName, Double.parseDouble(unitPrice), Integer.parseInt(stockAmount));
+                Client.Object.addItem(newItem);
+                JOptionPane.showMessageDialog(null, String.format(
+                        "Item: %s\nUnit Price: %.2f\nStock Amount: %s \n\nItem successfully been added!",
+                        itemName, Double.parseDouble(unitPrice), Integer.parseInt(stockAmount)));
 
-            refresh();
+                refresh();
+            }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(
+                    null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             System.out.println(e.getMessage());
         }
     }//GEN-LAST:event_addButtonActionPerformed
@@ -474,8 +555,13 @@ public class AdminCRUDForm extends javax.swing.JFrame {
         // get current selected item from table model
         DefaultTableModel model = (DefaultTableModel) viewItemTable.getModel();
         int selectedRowIndex = viewItemTable.getSelectedRow();
+        if (selectedRowIndex == -1) {
+            JOptionPane.showMessageDialog(null, 
+                    "Cannot edit item that doesn't exist.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
         int itemID = (int) model.getValueAt(selectedRowIndex, 0);
-
         String originalItemName = (String) model.getValueAt(selectedRowIndex, 1);
         double originalUnitPrice = (double) model.getValueAt(selectedRowIndex, 2);
         int originalStockAmount = (int) model.getValueAt(selectedRowIndex, 3);
@@ -488,7 +574,10 @@ public class AdminCRUDForm extends javax.swing.JFrame {
 
         try {
             // check whether all input fields are filled
-            if (!Auth.textFieldsFilled(itemNameInput, unitPriceInput, stockAmountInput)) {
+            if (!Auth.textFieldsFilled(
+                    itemNameInput,
+                    unitPriceInput,
+                    stockAmountInput)) {
                 throw new Exception("All input fields are required!");
             }
             if (!Auth.isValidItemName(newItemName)) {
@@ -500,23 +589,46 @@ public class AdminCRUDForm extends javax.swing.JFrame {
             if (!Auth.isValidStockAmount(newStockAmount)) {
                 throw new Exception("Enter a value between 1-9999.");
             }
-            if (!Auth.inputsChanged(newItemName, Double.parseDouble(newUnitPrice), Integer.parseInt(newStockAmount), originalItemName, originalUnitPrice, originalStockAmount)) {
+            if (!Auth.inputsChanged(
+                    newItemName,
+                    Double.parseDouble(newUnitPrice),
+                    Integer.parseInt(newStockAmount),
+                    originalItemName,
+                    originalUnitPrice,
+                    originalStockAmount)) {
                 throw new Exception("No changes have been made.");
             }
             // creating the updated the item
-            Item newItem = new Item(newItemName, Double.parseDouble(newUnitPrice), Integer.parseInt(newStockAmount));
+            Item newItem = new Item(
+                    newItemName,
+                    Double.parseDouble(newUnitPrice),
+                    Integer.parseInt(newStockAmount));
 
             // confirmation dialog for edit item
-            int confirm = JOptionPane.showConfirmDialog(null, String.format("Are you sure you want to edit item '%s'?", newItemName), "Confirm Edit", JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(null,
+                    String.format("Are you sure you want to edit item '%s'?", newItemName),
+                    "Confirm Edit", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 Client.Object.updateItem(itemID, newItem);
-                JOptionPane.showMessageDialog(null, String.format("Item: %s\nUnit Price: %.2f\nStock Amount: %s \n\nChanges successfully been added!", newItem.getItemName(), newItem.getUnitPrice(), newItem.getStockAmount()));
+                JOptionPane.showMessageDialog(null,
+                        String.format(
+                                """
+                                      Item: %s
+                                      Unit Price: %.2f
+                                      Stock Amount: %s 
+                                      
+                                      Changes successfully been made!
+                                      """,
+                                newItem.getItemName(),
+                                newItem.getUnitPrice(),
+                                newItem.getStockAmount()));
 
                 // reset fields, udpate table contents, update combo box
                 refresh();
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e.getMessage(),
+                    "Error", JOptionPane.ERROR_MESSAGE);
             System.out.println(e.getMessage());
         }
     }//GEN-LAST:event_editButtonActionPerformed
@@ -529,17 +641,23 @@ public class AdminCRUDForm extends javax.swing.JFrame {
         Item itemToDelete = new Item(itemName, unitPrice, stockAmount);
 
         try {
-            int confirm = JOptionPane.showConfirmDialog(null, String.format("Are you sure you want to delete item '%s'?", itemName), "Confirm Deletion", JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(null, 
+                    String.format(
+                            "Are you sure you want to delete item '%s'?", itemName), 
+                    "Confirm Deletion", JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 // Delete the item                
                 Client.Object.deleteItem(itemToDelete);
-                JOptionPane.showMessageDialog(null, String.format("Item '%s' successfully deleted!", itemName));
+                JOptionPane.showMessageDialog(null, 
+                        String.format(
+                                "Item '%s' successfully deleted!", itemName));
 
                 // reset fields, udpate table contents, update combo box
                 refresh();
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null, e.getMessage(), 
+                    "Error", JOptionPane.ERROR_MESSAGE);
             System.out.println(e.getMessage());
         }
     }//GEN-LAST:event_deleteButtonActionPerformed
@@ -612,78 +730,7 @@ public class AdminCRUDForm extends javax.swing.JFrame {
         });
     }
 
-    private void loadTable() {
-        try {
-            DefaultTableModel model = Client.Object.viewTable();
-            viewItemTable.setModel(model);
-        } catch (Exception ex) {
-            Logger.getLogger(AdminCRUDForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
 
-    private void loadComboBox() {
-        try {
-            // TODO add your handling code here:
-            itemIDComboBox.removeAllItems();
-            ArrayList<String> itemIDs = Client.Object.retrieveAllItemID();
-            for (String itemID : itemIDs) {
-                itemIDComboBox.addItem(itemID);
-            }
-        } catch (Exception ex) {
-            Logger.getLogger(AdminCRUDForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-
-    private void refresh() {
-        loadTable();
-        loadComboBox();
-
-        addButton.setEnabled(false);
-        editButton.setEnabled(false);
-        deleteButton.setEnabled(false);
-
-        //reset input fields to empty
-        itemNameInput.setText("");
-        unitPriceInput.setText("");
-        stockAmountInput.setText("");
-
-        itemNameInput.requestFocus();
-    }
-
-    private void initialisedDocumentListener() {
-        DocumentListener inputListener = new DocumentListener() {
-            private void updateButtonState() {
-                boolean inputsFilled = Auth.textFieldsFilled(itemNameInput, unitPriceInput, stockAmountInput);
-                boolean isValidName = Auth.isValidItemName(itemNameInput.getText());
-                boolean isValidPrice = Auth.isValidUnitPrice(unitPriceInput.getText());
-                boolean isValidStock = Auth.isValidStockAmount(stockAmountInput.getText());
-
-                addButton.setEnabled(inputsFilled);
-                editButton.setEnabled(inputsFilled && isValidName && isValidPrice && isValidStock);
-                deleteButton.setEnabled(inputsFilled && isValidName && isValidPrice && isValidStock);
-            }
-
-            @Override
-            public void insertUpdate(DocumentEvent e) {
-                updateButtonState();
-            }
-
-            @Override
-            public void removeUpdate(DocumentEvent e) {
-                updateButtonState();
-            }
-
-            @Override
-            public void changedUpdate(DocumentEvent e) {
-                updateButtonState();
-            }
-
-        };
-
-        itemNameInput.getDocument().addDocumentListener(inputListener);
-        unitPriceInput.getDocument().addDocumentListener(inputListener);
-        stockAmountInput.getDocument().addDocumentListener(inputListener);
-    }
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addButton;
     private javax.swing.JButton cancelButton;
