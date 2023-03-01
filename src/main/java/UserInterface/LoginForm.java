@@ -149,8 +149,8 @@ public class LoginForm extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void loginButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginButtonActionPerformed
-        String username = this.usernameInput.getText();
-        String password = new String(this.passwordInput.getPassword());
+        String username = this.usernameInput.getText().trim();
+        String password = new String(this.passwordInput.getPassword()).trim();
 
         if (username.isBlank() || password.isBlank()) {
             JOptionPane.showMessageDialog(null, "Input fields cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
