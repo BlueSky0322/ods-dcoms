@@ -30,7 +30,7 @@ public class DerbyDB {
             
             //initialise all tables
             initialiseItemTable(createStatement());
-            initialiseCustomerTable(createStatement());
+            initialiseUserTable(createStatement());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -88,7 +88,7 @@ public class DerbyDB {
         }
     }
 
-    public static void initialiseCustomerTable(Statement stmt) throws SQLException {
+    public static void initialiseUserTable(Statement stmt) throws SQLException {
         String createCustomerTableQuery;
         ResultSet rs;
         try {
@@ -105,6 +105,18 @@ public class DerbyDB {
                         + "role VARCHAR(20) NOT NULL)";
                 stmt.executeUpdate(createCustomerTableQuery);
                 System.out.println("Table 'OdsUser' created successfully.");
+                commit();
+                
+                String customerPassword = Hasher.sha256("johndoe123");
+                String adminPassword = Hasher.sha256("administrator");
+                
+                // Insert static values
+                String insertValuesQuery = "INSERT INTO OdsUser (username, password, first_name, last_name, passport, role) "
+                        + "VALUES "
+                        + "('administrator', '" + adminPassword + "', 'Alexander', 'Brown', 'G12345678', 'ADMIN'), "
+                        + "('johndoe', '" + customerPassword + "', 'John', 'Doe', 'J12345678', 'CUSTOMER')";
+                stmt.executeUpdate(insertValuesQuery);
+                System.out.println("Static values added to 'Item' table.");
                 commit();
             } else {
                 System.out.println("Table 'OdsUser' already exists. No new table created.");

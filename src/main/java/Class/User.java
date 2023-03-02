@@ -28,6 +28,14 @@ public class User implements Serializable {
         this.lastName = lastName;
         this.passportNumber = passportNumber;
     }
+    
+    public User(String username, String firstName, String lastName, String passportNumber, Role role) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.passportNumber = passportNumber;
+        this.role = role;
+    }
 
     public User(String username, String password, Role role) {
         this.username = username;
@@ -62,5 +70,12 @@ public class User implements Serializable {
 
     public Role getRole() {
         return role;
-    }    
+    }
+
+    @Override
+    public String toString() {
+        return "User{" + "username=" + username + ", firstName=" + firstName + ", lastName=" + lastName + ", passportNumber=" + passportNumber + ", role=" + role + '}';
+    }
+
+    
 }
