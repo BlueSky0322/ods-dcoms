@@ -27,11 +27,12 @@ public class DerbyDB {
             dbConnection = DriverManager.getConnection(DATABASE_URL, DATABASE_USERNAME, DATABASE_PASSWORD);
             dbConnection.setAutoCommit(false);
             System.out.println("Database is running...");
+            
             //initialise all tables
             initialiseItemTable(createStatement());
-            initialiseCustomerTable(createStatement());
             initialiseOrderTable(createStatement());
             initialiseCartTable(createStatement());
+            initialiseUserTable(createStatement());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -75,7 +76,7 @@ public class DerbyDB {
                         + "VALUES "
                         + "('T-Shirt', 15.99, 50), "
                         + "('Sneakers', 89.99, 25), "
-                        + "('Jeans', 29.99, 75), "
+                        + "('Jeans', 29.99, 75), "      
                         + "('Hoodie', 35.99, 30), "
                         + "('Backpack', 49.99, 20)";
                 stmt.executeUpdate(insertValuesQuery);
@@ -89,7 +90,7 @@ public class DerbyDB {
         }
     }
 
-    public static void initialiseCustomerTable(Statement stmt) throws SQLException {
+    public static void initialiseUserTable(Statement stmt) throws SQLException {
         String createCustomerTableQuery;
         ResultSet rs;
         try {
@@ -97,7 +98,7 @@ public class DerbyDB {
             if (!rs.next()) {
                 createCustomerTableQuery
                         = "CREATE TABLE OdsUser ("
-                        + "cust_id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
+                        + "user_id INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
                         + "username VARCHAR(15) NOT NULL UNIQUE,"
                         + "password VARCHAR(255) NOT NULL,"
                         + "first_name VARCHAR(45) NOT NULL,"
@@ -106,6 +107,18 @@ public class DerbyDB {
                         + "role VARCHAR(20) NOT NULL)";
                 stmt.executeUpdate(createCustomerTableQuery);
                 System.out.println("Table 'OdsUser' created successfully.");
+                commit();
+                
+                String customerPassword = Hasher.sha256("johndoe123");
+                String adminPassword = Hasher.sha256("administrator");
+                
+                // Insert static values
+                String insertValuesQuery = "INSERT INTO OdsUser (username, password, first_name, last_name, passport, role) "
+                        + "VALUES "
+                        + "('administrator', '" + adminPassword + "', 'Alexander', 'Brown', 'G12345678', 'ADMIN'), "
+                        + "('johndoe', '" + customerPassword + "', 'John', 'Doe', 'J12345678', 'CUSTOMER')";
+                stmt.executeUpdate(insertValuesQuery);
+                System.out.println("Static values added to 'Item' table.");
                 commit();
             } else {
                 System.out.println("Table 'OdsUser' already exists. No new table created.");

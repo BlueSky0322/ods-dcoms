@@ -4,12 +4,7 @@
  */
 package Class.utils;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JTextField;
 
 /**
@@ -67,14 +62,15 @@ public class Auth {
 
     public static boolean isValidItemName(String itemName) {
         // accept alphanumeric and space, with at least 5-25 characters
-        return itemName.matches("^[\\w\\s\\d]{5,25}$");
+        return itemName.matches("^[a-zA-Z0-9\\\\s_-]{5,50}$");
     }
 
     public static boolean isValidUnitPrice(String unitPrice) {
+        // accept any double greater than 0 with maximum two decimal points (eg 5.45)
         try {
             double price = Double.parseDouble(unitPrice);
             DecimalFormat df = new DecimalFormat("#.##");
-            return Double.parseDouble(df.format(price)) == price;
+            return Double.parseDouble(df.format(price)) == price && price > 0;
         } catch (NumberFormatException e) {
             return false;
         }
@@ -90,8 +86,12 @@ public class Auth {
         }
     }
 
-    public static boolean inputsChanged(String currentName, double currentPrice, int currentStock, String originalName, double originalPrice, int originalStock) {
-        return !currentName.equals(originalName) || currentPrice != originalPrice || currentStock != originalStock;
+    public static boolean inputsChanged(
+            String currentName, double currentPrice, int currentStock, 
+            String originalName, double originalPrice, int originalStock) {
+        return !currentName.equals(originalName) 
+                || currentPrice != originalPrice 
+                || currentStock != originalStock;
     }
     
    

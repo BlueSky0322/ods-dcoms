@@ -123,8 +123,13 @@ public class AdminMainMenuForm extends javax.swing.JFrame {
 
     private void crudButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crudButtonActionPerformed
         // TODO add your handling code here:
-        new AdminCRUDForm().setVisible(true);
-        dispose();
+        try {
+            AdminCRUDForm form = new AdminCRUDForm();
+            form.setVisible(true);
+            this.dispose();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }        
     }//GEN-LAST:event_crudButtonActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -137,7 +142,6 @@ public class AdminMainMenuForm extends javax.swing.JFrame {
 
         // Set the position of the form
         this.setLocation(x, y);
-        this.setSize(500, 500);
     }//GEN-LAST:event_formWindowOpened
 
     /**

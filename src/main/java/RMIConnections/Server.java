@@ -22,6 +22,7 @@ public class Server extends UnicastRemoteObject implements Interface {
         super();
         
     }
+    
 
     @Override
     public void placeholderMethod() throws RemoteException {
@@ -31,7 +32,7 @@ public class Server extends UnicastRemoteObject implements Interface {
     @Override
     public User login(User user) throws Exception {
         String query = """
-                       SELECT username, password, role
+                       SELECT username, password, first_name, last_name, passport, role
                        FROM OdsUser
                        WHERE username=?
                        """;
@@ -50,10 +51,14 @@ public class Server extends UnicastRemoteObject implements Interface {
         if (!hashedPassword.equals(password)) {
             throw new Exception("Incorrect password!");
         }
+        
         String username = result.getString("username");
+        String firstName = result.getString("first_name");
+        String lastName = result.getString("last_name");
+        String passport = result.getString("passport");
         Role role = Role.valueOf(result.getString("role"));
 
-        return new User(username, password, role);
+        return new User(username, firstName, lastName, passport, role);
     }
 
     @Override
@@ -149,9 +154,7 @@ public class Server extends UnicastRemoteObject implements Interface {
         DefaultTableModel model = new DefaultTableModel(columnNames, 0);
         model.setRowCount(0);
         try {
-
             rs = DerbyDB.createStatement().executeQuery("SELECT * FROM ITEM");
-
             while (rs.next()) {
                 int itemID = rs.getInt("ITEM_ID");
                 String itemName = rs.getString("ITEM_NAME");
@@ -239,9 +242,9 @@ public class Server extends UnicastRemoteObject implements Interface {
 
         // get items
         query = """
-            SELECT * from ITEM
-            WHERE item_id = ?
-            """;
+                SELECT * from ITEM
+                WHERE item_id = ?
+                """;
 
         ps = DerbyDB.preparedStatement(query);
         ps.setString(1, itemID);

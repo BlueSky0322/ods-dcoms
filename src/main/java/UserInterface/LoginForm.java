@@ -165,7 +165,7 @@ public class LoginForm extends javax.swing.JFrame {
             passwordInput.setText("");
 
         if (user.getRole().equals(Role.CUSTOMER)) {
-            new CustomerPlaceholder().setVisible(true);
+            new CustomerPlaceholder().setVisible(true); // need to pass user object to customer menu
         } else {
             new AdminMainMenuForm().setVisible(true);
         }
