@@ -93,5 +93,23 @@ public class Auth {
     public static boolean inputsChanged(String currentName, double currentPrice, int currentStock, String originalName, double originalPrice, int originalStock) {
         return !currentName.equals(originalName) || currentPrice != originalPrice || currentStock != originalStock;
     }
-
+    
+   
+    public static boolean isValidOrderQuantity(int availableQuantity, String userQuantity){
+        
+        try{
+            int orderQuantity = Integer.valueOf(userQuantity);
+            if(orderQuantity<=0 || availableQuantity-orderQuantity<0){
+    
+                return true;
+            }else{
+                return false;
+            }    
+        }catch(NumberFormatException e){
+            return false;
+        }}
+    
+    
+    
+    
 }

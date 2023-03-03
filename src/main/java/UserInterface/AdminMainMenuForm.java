@@ -54,9 +54,7 @@ public class AdminMainMenuForm extends javax.swing.JFrame {
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Admin Main Menu"));
         jPanel1.setToolTipText("");
 
-        genReportButton.setBackground(new java.awt.Color(255, 255, 255));
         genReportButton.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        genReportButton.setForeground(new java.awt.Color(0, 0, 0));
         genReportButton.setText("Generate Report");
         genReportButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -64,9 +62,7 @@ public class AdminMainMenuForm extends javax.swing.JFrame {
             }
         });
 
-        crudButton.setBackground(new java.awt.Color(255, 255, 255));
         crudButton.setFont(new java.awt.Font("Segoe UI", 0, 24)); // NOI18N
-        crudButton.setForeground(new java.awt.Color(0, 0, 0));
         crudButton.setText("Item Information");
         crudButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -1,7 +1,8 @@
 package Main;
 
 import RMIConnections.Client;
-import UserInterface.AddItemForm;
+import UserInterface.AdminCRUDForm;
+import UserInterface.CustomerCartForm;
 import UserInterface.LoginForm;
 import UserInterface.CustomerPlaceOrderForm;
 
@@ -19,8 +20,9 @@ public class App {
         System.out.println("Connection established with server.");
         Client client = new Client();
         
-        
-        new LoginForm().setVisible(false);
-        new CustomerPlaceOrderForm().setVisible(true);
+        //new AdminCRUDForm().setVisible(true);
+        //new LoginForm().setVisible(false);
+        //new CustomerPlaceOrderForm().setVisible(true);
+        new CustomerCartForm().setVisible(true);
     }
 }

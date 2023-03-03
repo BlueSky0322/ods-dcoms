@@ -31,6 +31,7 @@ public class DerbyDB {
             initialiseItemTable(createStatement());
             initialiseCustomerTable(createStatement());
             initialiseOrderTable(createStatement());
+            initialiseCartTable(createStatement());
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -119,24 +120,27 @@ public class DerbyDB {
         ResultSet rs;
         try {
             rs = dbConnection.getMetaData().getTables(null, null, "CUSTOMERORDER", null);
-            System.out.println("Hey");
             if (!rs.next()) {
                 createCustomerOrderTableQuery
                         = "CREATE TABLE CustomerOrder ("
                         + "receipt_no INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
-                        + "order_date TIMESTAMP NOT NULL,"
+                        + "order_time TIMESTAMP NOT NULL,"
+                        + "customer_id VARCHAR(255) NOT NULL,"
                         + "customer_name VARCHAR(255) NOT NULL,"
+                        + "item_id INT NOT NULL;"
                         + "item_name VARCHAR(255) NOT NULL,"
                         + "unit_price DECIMAL(10,2) NOT NULL,"
                         + "order_quantity INT NOT NULL,"
                         + "item_totalprice DECIMAL(10,2) NOT NULL,"
                         + "order_totalprice DECIMAL(10,2) NOT NULL,"
+                        + "paid_amount DECIMAL(10,2) NOT NULL,"
                         + "payment_type VARCHAR(40) NOT NULL,"
-                        + "payment_time TIMESTAMP NOT NULL)";
+                        + "payment_time TIMESTAMP NOT NULL,"
+                        + "payment_made BOOLEAN NOT NULL)";
+                
                 stmt.executeUpdate(createCustomerOrderTableQuery);
                 System.out.println("Table 'Customer Order Table' created successfully.");
                 commit();
-                System.out.println("Hello");
             } else {
                 System.out.println("Table 'Order' already exists. No new table created.");
             }
@@ -144,4 +148,32 @@ public class DerbyDB {
             System.out.println("Error creating/checking table: " + ex.getMessage());
         }
     }
+    
+    public static void initialiseCartTable(Statement stmt) throws SQLException {
+        String createCartTableQuery;
+        ResultSet rs;
+        try {
+            rs = dbConnection.getMetaData().getTables(null, null, "CUSTOMERCART", null);
+            if (!rs.next()) {
+                createCartTableQuery
+                        = "CREATE TABLE Cart ("
+                        + "customer_id VARCHAR(255) NOT NULL,"
+                        + "customer_name VARCHAR(255) NOT NULL,"
+                        + "item_id INT NOT NULL,"
+                        + "item_name VARCHAR(255) NOT NULL,"
+                        + "unit_price DECIMAL(10,2) NOT NULL,"
+                        + "order_quantity INT NOT NULL,"
+                        + "item_totalprice DECIMAL(10,2) NOT NULL)";
+                
+                stmt.executeUpdate(createCartTableQuery);
+                System.out.println("Table 'Cart Table' created successfully.");
+                commit();
+            } else {
+                System.out.println("Table 'Cart' already exists. No new table created.");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error creating/checking table: " + ex.getMessage());
+        }
+    }
+    
 }

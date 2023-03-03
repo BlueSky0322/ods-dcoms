@@ -427,6 +427,7 @@ public class AdminCRUDForm extends javax.swing.JFrame {
             }
 
             Item newItem = new Item(itemName, Double.parseDouble(unitPrice), Integer.parseInt(stockAmount));
+            
             Client.Object.addItem(newItem);
             JOptionPane.showMessageDialog(null, String.format("Item: %s\nUnit Price: %.2f\nStock Amount: %s \n\nItem successfully been added!", itemName, Double.parseDouble(unitPrice), Integer.parseInt(stockAmount)));
 

@@ -1,5 +1,6 @@
 package RMIConnections;
 
+import Class.Cart;
 import Class.User;
 import Class.Item;
 import java.rmi.*;
@@ -21,4 +22,13 @@ public interface Interface extends Remote{
     public DefaultTableModel viewTable() throws Exception;
     public Item retrieveItemByID(String itemID) throws Exception;
     public ArrayList<String> retrieveAllItemID() throws Exception;
+    
+    public String addCart(Cart newCart) throws Exception;
+    public boolean searchItem(String searchItem) throws Exception;
+    public String getSearchItem(String searchItem) throws Exception;
+    public DefaultTableModel viewCart(String userID) throws Exception;
+    public boolean searchCart(String searchItem) throws Exception;
+    public String getCartItem(String searchItem) throws Exception;
+    public boolean removeOrder(int userID, String itemName, int itemQuantity)throws Exception;
+    public boolean updateCart(int userID, String itemName, int itemQuantity) throws Exception;
 }

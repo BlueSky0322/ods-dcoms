@@ -2,10 +2,10 @@ package RMIConnections;
 
 import Class.User;
 import Class.Item;
+import Class.Cart;
 import Class.utils.DerbyDB;
 import Class.utils.Hasher;
 import Enum.Role;
-import java.lang.System.Logger;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.sql.PreparedStatement;
@@ -20,6 +20,7 @@ public class Server extends UnicastRemoteObject implements Interface {
 
     public Server() throws RemoteException {
         super();
+        
     }
 
     @Override
@@ -281,6 +282,346 @@ public class Server extends UnicastRemoteObject implements Interface {
         DerbyDB.commit();
 
         return itemIDs;
+    }
+    
+    @Override
+    public String addCart(Cart newCart) throws Exception {
+        String query;
+        PreparedStatement ps;
+        ResultSet result;
+        int itemID = newCart.getItemID();
+        double itemPrice = newCart.getItemPrice();
+        String itemName = newCart.getItemName();
+        int orderQuantity = newCart.getItemQuantity();
+
+        query = """
+                SELECT item_id
+                FROM CART
+                WHERE item_id=?
+                """;
+        ps = DerbyDB.preparedStatement(query);
+        ps.setInt(1, newCart.getItemID());
+        result = ps.executeQuery();
+
+        // if item already exists
+        if (result.next()) {
+            return ("Item with this ID already exists in cart!");
+        }
+        
+        query = """
+                SELECT item_id, stock_amount
+                FROM ITEM
+                WHERE item_id=?
+                """;
+        ps = DerbyDB.preparedStatement(query);
+        ps.setInt(1, newCart.getItemID());
+        result = ps.executeQuery();
+        if (result.next()) {
+            int availableItemAmount = result.getInt("STOCK_AMOUNT");
+            int newQuantity = availableItemAmount-orderQuantity;
+            query = """
+                UPDATE ITEM SET item_name = ?, unit_price=?, stock_amount=?
+                WHERE item_id=?
+                """;
+            ps = DerbyDB.preparedStatement(query);
+            ps.setString(1, itemName);
+            ps.setDouble(2, itemPrice);
+            ps.setInt(3, newQuantity);
+            ps.setInt(4, itemID);
+
+            int rowsUpdated = ps.executeUpdate();
+            System.out.println(rowsUpdated + " rows updated.");
+            DerbyDB.commit();
+        }
+
+        query = """
+                INSERT INTO CART (customer_id, customer_name, item_id, item_name, unit_price, order_quantity, item_totalprice) VALUES
+                    (?, ?, ?, ?, ?, ?, ?)
+                """;
+        ps = DerbyDB.preparedStatement(query);
+        ps.setString(1, newCart.getCustomerID());
+        ps.setString(2, newCart.getCustomerName());
+        ps.setInt(3, newCart.getItemID());
+        ps.setString(4, newCart.getItemName());
+        ps.setDouble(5, newCart.getItemPrice());
+        ps.setInt(6, orderQuantity);
+        ps.setDouble(7, newCart.getItemTotalPrice());
+
+        int rowsInserted = ps.executeUpdate();
+        System.out.println(rowsInserted + " rows inserted.");
+        DerbyDB.commit();
+        return ("Successfully added "+newCart.getItemName()+" into cart!");
+    }
+    
+    @Override
+    public boolean searchItem(String searchItem) throws Exception{
+        String query;
+        PreparedStatement ps;
+        ResultSet result;
+        boolean itemExist=true;
+
+        query = """
+                SELECT item_name
+                FROM ITEM
+                WHERE item_name=?
+                """;
+        ps = DerbyDB.preparedStatement(query);
+        ps.setString(1, searchItem);
+
+        result = ps.executeQuery();
+
+        // if user exists
+        if (result.next()) {
+            return itemExist;
+        }else{
+            return false;
+        }
+    
+    }
+    
+    @Override
+    public boolean searchCart(String searchItem) throws Exception{
+        String query;
+        PreparedStatement ps;
+        ResultSet result;
+        boolean itemExist=true;
+
+        query = """
+                SELECT item_name
+                FROM CART
+                WHERE item_name=?
+                """;
+        ps = DerbyDB.preparedStatement(query);
+        ps.setString(1, searchItem);
+
+        result = ps.executeQuery();
+
+        // if user exists
+        if (result.next()) {
+            return itemExist;
+        }else{
+            return false;
+        }
+    
+    }
+    
+    @Override
+    public String getSearchItem(String searchItem) throws Exception{
+        String query;
+        PreparedStatement ps;
+        ResultSet result;
+        String searchedItem;
+        String item_no="";
+        String item_name="";
+        String item_price="";
+        String item_quantity="";
+
+        query = """
+                SELECT item_id,item_name,unit_price,stock_amount
+                FROM ITEM
+                WHERE item_name=?
+                """;
+        ps = DerbyDB.preparedStatement(query);
+        ps.setString(1, searchItem);
+        
+        result = ps.executeQuery();
+        if (result.next()) {
+            item_no = result.getString(1);
+            item_name = result.getString(2);
+            item_price = result.getString(3);
+            item_quantity = result.getString(4);
+        }
+        return(item_no+","+item_name+","+item_price+","+item_quantity);
+    }
+    
+    @Override
+    public String getCartItem(String searchItem) throws Exception{
+        String query;
+        PreparedStatement ps;
+        ResultSet result;
+        String searchedItem;
+        String item_quantity="";
+        String item_name="";
+        String item_price="";
+        String item_totalprice="";
+
+        query = """
+                SELECT item_name,unit_price,order_quantity, item_totalprice
+                FROM CART
+                WHERE item_name=?
+                """;
+        ps = DerbyDB.preparedStatement(query);
+        ps.setString(1, searchItem);
+        
+        result = ps.executeQuery();
+        if (result.next()) {
+            item_name = result.getString(1);
+            item_price = result.getString(2);
+            item_quantity = result.getString(3);
+            item_totalprice = result.getString(4);
+        }
+        return(item_name+","+item_price+","+item_quantity+","+item_totalprice);
+    }
+    
+    @Override
+    public DefaultTableModel viewCart(String userID) {
+        ResultSet rs;
+        String customerID = userID; 
+        String query;
+        PreparedStatement ps;
+        ResultSet result;
+        String[] columnNames = {"Item Name", "Price Per Unit", "Order Quantity", "Item Total Price"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        model.setRowCount(0);
+        try {
+            query = """
+                SELECT customer_id,item_name,unit_price,order_quantity,item_totalprice
+                FROM CART
+                WHERE customer_id=?
+                """;
+            ps = DerbyDB.preparedStatement(query);
+            ps.setString(1, customerID);
+            
+            result = ps.executeQuery();
+            while (result.next()) {
+                String itemName = result.getString("ITEM_NAME");
+                double unitPrice = result.getDouble("UNIT_PRICE");
+                int orderQuantity = result.getInt("ORDER_QUANTITY");
+                double itemTotalPrice = result.getDouble("ITEM_TOTALPRICE");
+
+                Object[] row = {itemName, unitPrice, orderQuantity, itemTotalPrice};
+                model.addRow(row);
+            }
+            //commit changes to database
+            DerbyDB.commit();
+
+        } catch (SQLException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return model;
+    }
+    
+    @Override
+    public boolean removeOrder(int userID, String itemName, int itemQuantity)throws Exception{
+        ResultSet rs;
+        int customerID = userID; 
+        String query;
+        PreparedStatement ps;
+        ResultSet result;
+        boolean orderRemoved = false;
+        query = """
+                SELECT customer_id,item_name,unit_price,order_quantity,item_totalprice
+                FROM CART
+                WHERE customer_id=? AND item_name = ?
+                """;
+        ps=DerbyDB.preparedStatement(query);
+        ps.setInt(1, customerID);
+        ps.setString(2, itemName);
+        result = ps.executeQuery();
+        if(result.next()){
+            int orderQuantity = result.getInt("ORDER_QUANTITY");
+            if(orderQuantity== itemQuantity){
+                query = """
+                DELETE FROM CART
+                WHERE item_name = ? 
+                """;
+                
+                ps = DerbyDB.preparedStatement(query);
+                ps.setString(1, itemName);
+                int rowsDeleted = ps.executeUpdate();
+                System.out.println(rowsDeleted + " rows deleted.");
+                DerbyDB.commit();
+                
+                orderRemoved = true;
+            } 
+        }
+        return orderRemoved;
+    }
+    
+    @Override
+    public boolean updateCart(int userID, String itemName, int itemQuantity) throws Exception{
+        ResultSet rs;
+        int customerID = userID; 
+        String updateItemName = itemName;
+        String query;
+        PreparedStatement ps;
+        ResultSet result;
+        boolean orderUpdatedStatus = false;
+        query = """
+                SELECT customer_id,item_name,unit_price,order_quantity,item_totalprice
+                FROM CART
+                WHERE customer_id=? AND item_name =?
+                """;
+        ps = DerbyDB.preparedStatement(query);
+        ps.setInt(1, customerID);
+        ps.setString(2, itemName);
+        result = ps.executeQuery();
+        if(result.next()){
+            int oldOrderQuantity = result.getInt("ORDER_QUANTITY");
+            int checkQuantity = oldOrderQuantity-itemQuantity;
+            System.out.println(checkQuantity);
+            if(checkQuantity<0){
+                System.out.println("NEGATIVE");
+                query = """
+                SELECT item_name, stock_amount
+                FROM ITEM
+                WHERE item_name =?
+                """;
+                ps = DerbyDB.preparedStatement(query);
+                ps.setString(1, updateItemName);
+                result = ps.executeQuery();
+                if(result.next()){
+                int remainingQuantity = result.getInt("STOCK_AMOUNT");
+                System.out.println(remainingQuantity);
+                int checkQuantityUpdate = remainingQuantity-checkQuantity;
+                if(checkQuantityUpdate>0){
+                    query = """
+                    UPDATE ITEM SET stock_amount=?
+                    WHERE item_name=?
+                    """;
+                    ps = DerbyDB.preparedStatement(query);
+                    ps.setInt(1, checkQuantityUpdate);
+                    ps.setString(2, itemName);
+                    int rowsUpdated = ps.executeUpdate();
+                    System.out.println(rowsUpdated + " rows updated.");
+                    DerbyDB.commit();
+                    orderUpdatedStatus = true;
+                }else{
+                   orderUpdatedStatus = false;
+                }
+                }
+            }else{
+                System.out.println("POSITIVE");
+                System.out.println(itemName);
+                query = """
+                        SELECT item_name, stock_amount
+                        FROM ITEM
+                        WHERE item_name =?
+                        """;
+                ps = DerbyDB.preparedStatement(query);
+                ps.setString(1, itemName);
+                ResultSet QueryResult = ps.executeQuery();
+                System.out.println(result);
+                if(QueryResult.next()){
+                    System.out.println("ENTER HERE");
+                int remainingQuantity = QueryResult.getInt("STOCK_AMOUNT");
+                int newQuantity = remainingQuantity+checkQuantity;
+                query = """
+                    UPDATE ITEM SET stock_amount=?
+                    WHERE item_name=?
+                    """;
+                    ps = DerbyDB.preparedStatement(query);
+                    ps.setInt(1, newQuantity);
+                    ps.setString(2, itemName);
+                    int rowsUpdated = ps.executeUpdate();
+                    System.out.println(rowsUpdated + " rows updated.");
+                    DerbyDB.commit();
+                    orderUpdatedStatus = true;
+            }
+            }
+        }
+        
+        return orderUpdatedStatus;
     }
 
 }
