@@ -576,7 +576,7 @@ public class Server extends UnicastRemoteObject implements Interface {
                 if(result.next()){
                 int remainingQuantity = result.getInt("STOCK_AMOUNT");
                 System.out.println(remainingQuantity);
-                int checkQuantityUpdate = remainingQuantity-checkQuantity;
+                int checkQuantityUpdate = remainingQuantity+checkQuantity;
                 if(checkQuantityUpdate>0){
                     query = """
                     UPDATE ITEM SET stock_amount=?
@@ -587,6 +587,17 @@ public class Server extends UnicastRemoteObject implements Interface {
                     ps.setString(2, itemName);
                     int rowsUpdated = ps.executeUpdate();
                     System.out.println(rowsUpdated + " rows updated.");
+                    
+                    query="""
+                      UPDATE CART SET order_quantity=?
+                      WHERE item_name=?
+                      """;
+                      ps = DerbyDB.preparedStatement(query);
+                      ps.setInt(1, itemQuantity);
+                      ps.setString(2, itemName);
+                      int cartRowsUpdated = ps.executeUpdate();
+                      System.out.println(cartRowsUpdated + " rows updated.");
+                      
                     DerbyDB.commit();
                     orderUpdatedStatus = true;
                 }else{
@@ -618,7 +629,17 @@ public class Server extends UnicastRemoteObject implements Interface {
                     ps.setString(2, itemName);
                     int rowsUpdated = ps.executeUpdate();
                     System.out.println(rowsUpdated + " rows updated.");
-                    DerbyDB.commit();
+                    
+                query="""
+                      UPDATE CART SET order_quantity=?
+                      WHERE item_name=?
+                      """;
+                      ps = DerbyDB.preparedStatement(query);
+                      ps.setInt(1, itemQuantity);
+                      ps.setString(2, itemName);
+                      int cartRowsUpdated = ps.executeUpdate();
+                      System.out.println(cartRowsUpdated + " rows updated.");
+                      DerbyDB.commit();
                     orderUpdatedStatus = true;
             }
             }

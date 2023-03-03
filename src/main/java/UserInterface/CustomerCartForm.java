@@ -42,7 +42,6 @@ public class CustomerCartForm extends javax.swing.JFrame {
         ContinueOrderingLabel = new javax.swing.JLabel();
         YourShoppingCartLabel = new javax.swing.JLabel();
         searchItemTextField = new javax.swing.JTextField();
-        removeAllOrderLabel = new javax.swing.JLabel();
         RemoveOrderButton = new javax.swing.JButton();
         OrderCheckoutButton = new javax.swing.JButton();
         editOrderButton = new javax.swing.JButton();
@@ -70,6 +69,11 @@ public class CustomerCartForm extends javax.swing.JFrame {
 
         ContinueOrderingLabel.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         ContinueOrderingLabel.setText("Continue Ordering");
+        ContinueOrderingLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ContinueOrderingLabelMouseClicked(evt);
+            }
+        });
 
         YourShoppingCartLabel.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         YourShoppingCartLabel.setText("Your Shopping Cart");
@@ -82,9 +86,6 @@ public class CustomerCartForm extends javax.swing.JFrame {
                 searchItemTextFieldActionPerformed(evt);
             }
         });
-
-        removeAllOrderLabel.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        removeAllOrderLabel.setText("remove all");
 
         RemoveOrderButton.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         RemoveOrderButton.setText("Remove Order");
@@ -159,13 +160,27 @@ public class CustomerCartForm extends javax.swing.JFrame {
             new String [] {
                 "Item Name", "Price Per Unit", "Order Quantity", "Item Total Price"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
         cartTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 cartTableMouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(cartTable);
+        if (cartTable.getColumnModel().getColumnCount() > 0) {
+            cartTable.getColumnModel().getColumn(0).setResizable(false);
+            cartTable.getColumnModel().getColumn(1).setResizable(false);
+            cartTable.getColumnModel().getColumn(2).setResizable(false);
+            cartTable.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -263,9 +278,7 @@ public class CustomerCartForm extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(searchOrderItemLabel)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(refreshLabel)
-                                .addGap(27, 27, 27)
-                                .addComponent(removeAllOrderLabel))
+                                .addComponent(refreshLabel))
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(YourShoppingCartLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(0, 0, Short.MAX_VALUE)))
@@ -288,7 +301,6 @@ public class CustomerCartForm extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchItemTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(removeAllOrderLabel)
                     .addComponent(searchOrderItemLabel)
                     .addComponent(refreshLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -365,7 +377,18 @@ public class CustomerCartForm extends javax.swing.JFrame {
 
     private void ItemQuantitySpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_ItemQuantitySpinnerStateChanged
         // TODO add your handling code here:
+        DefaultTableModel model = (DefaultTableModel)cartTable.getModel();
+        double itemPricePerUnit = Double.parseDouble(ItemPriceTextField.getText());
+        Integer itemQuantity = (Integer)ItemQuantitySpinner.getValue();
         
+        if(itemQuantity<0){
+            JOptionPane.showMessageDialog(null, "Invalid quantity! Please try again");
+            ItemQuantitySpinner.setValue(0);
+        }
+        else{
+            double itemTotalPrice = itemPricePerUnit*itemQuantity;
+            ItemTotalPriceTextField.setText(String.valueOf(itemTotalPrice));
+        }
     }//GEN-LAST:event_ItemQuantitySpinnerStateChanged
 
     private void searchOrderItemLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_searchOrderItemLabelMouseClicked
@@ -421,13 +444,6 @@ public class CustomerCartForm extends javax.swing.JFrame {
             if(Client.Object.updateCart(customerID, itemName, itemQuantity)){
                 JOptionPane.showMessageDialog(null, "Item"+itemName+" updated Successfully!");
                 refresh();
-                try {
-            String cusID = "2";
-            DefaultTableModel model = Client.Object.viewCart(cusID);
-            cartTable.setModel(model);
-        } catch (Exception ex) {
-            Logger.getLogger(CustomerPlaceOrderForm.class.getName()).log(Level.SEVERE, null, ex);
-        }
             }else{
                JOptionPane.showMessageDialog(null, "Item Quantity not available in inventory, item can't be updated!");
                
@@ -436,6 +452,11 @@ public class CustomerCartForm extends javax.swing.JFrame {
             Logger.getLogger(CustomerCartForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_editOrderButtonMouseClicked
+
+    private void ContinueOrderingLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ContinueOrderingLabelMouseClicked
+        // TODO add your handling code here:
+        new CustomerPlaceOrderForm().setVisible(true);
+    }//GEN-LAST:event_ContinueOrderingLabelMouseClicked
 
     /**
      * @param args the command line arguments
@@ -556,7 +577,6 @@ public class CustomerCartForm extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField orderTotalPriceTextField;
     private javax.swing.JLabel refreshLabel;
-    private javax.swing.JLabel removeAllOrderLabel;
     private javax.swing.JTextField searchItemTextField;
     private javax.swing.JLabel searchOrderItemLabel;
     // End of variables declaration//GEN-END:variables

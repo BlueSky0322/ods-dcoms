@@ -208,6 +208,11 @@ public class CustomerPlaceOrderForm extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel2.setText("Cart");
+        jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jLabel2MouseClicked(evt);
+            }
+        });
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel3.setText("Home");
@@ -438,6 +443,11 @@ public class CustomerPlaceOrderForm extends javax.swing.JFrame {
             Logger.getLogger(CustomerPlaceOrderForm.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_searchLabelMouseClicked
+
+    private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
+        // TODO add your handling code here:
+        new CustomerCartForm().setVisible(true);
+    }//GEN-LAST:event_jLabel2MouseClicked
 
     /**
      * @param args the command line arguments

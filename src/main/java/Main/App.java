@@ -22,7 +22,7 @@ public class App {
         
         //new AdminCRUDForm().setVisible(true);
         //new LoginForm().setVisible(false);
-        //new CustomerPlaceOrderForm().setVisible(true);
-        new CustomerCartForm().setVisible(true);
+        new CustomerPlaceOrderForm().setVisible(true);
+        //new CustomerCartForm().setVisible(true);
     }
 }
