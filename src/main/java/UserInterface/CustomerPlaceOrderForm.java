@@ -56,7 +56,7 @@ public class CustomerPlaceOrderForm extends javax.swing.JFrame {
         jLabel9 = new javax.swing.JLabel();
         addOrderButton = new javax.swing.JButton();
         searchItemTextField = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        cartLabel = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -206,11 +206,11 @@ public class CustomerPlaceOrderForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel2.setText("Cart");
-        jLabel2.addMouseListener(new java.awt.event.MouseAdapter() {
+        cartLabel.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        cartLabel.setText("Cart");
+        cartLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel2MouseClicked(evt);
+                cartLabelMouseClicked(evt);
             }
         });
 
@@ -299,7 +299,7 @@ public class CustomerPlaceOrderForm extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel3)
                         .addGap(71, 71, 71)
-                        .addComponent(jLabel2)
+                        .addComponent(cartLabel)
                         .addGap(66, 66, 66))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -321,7 +321,7 @@ public class CustomerPlaceOrderForm extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(cartLabel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -444,10 +444,11 @@ public class CustomerPlaceOrderForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_searchLabelMouseClicked
 
-    private void jLabel2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel2MouseClicked
+    private void cartLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cartLabelMouseClicked
         // TODO add your handling code here:
         new CustomerCartForm().setVisible(true);
-    }//GEN-LAST:event_jLabel2MouseClicked
+        dispose();
+    }//GEN-LAST:event_cartLabelMouseClicked
 
     /**
      * @param args the command line arguments
@@ -540,6 +541,7 @@ public class CustomerPlaceOrderForm extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable CustomerItemTable;
     private javax.swing.JButton addOrderButton;
+    private javax.swing.JLabel cartLabel;
     private javax.swing.JTextField itemAvailableStockTextField;
     private javax.swing.JTextField itemNameTextField;
     private javax.swing.JTextField itemNoTextField;
@@ -547,7 +549,6 @@ public class CustomerPlaceOrderForm extends javax.swing.JFrame {
     private javax.swing.JSpinner itemQuantitySpinner;
     private javax.swing.JTextField itemTotalPriceTextField;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

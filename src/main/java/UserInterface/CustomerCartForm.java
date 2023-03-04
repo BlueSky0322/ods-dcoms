@@ -351,11 +351,6 @@ public class CustomerCartForm extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_searchItemTextFieldActionPerformed
 
-    private void RemoveOrderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveOrderButtonActionPerformed
-        // TODO add your handling code here:
-        
-    }//GEN-LAST:event_RemoveOrderButtonActionPerformed
-
     private void OrderCheckoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OrderCheckoutButtonActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_OrderCheckoutButtonActionPerformed
@@ -456,7 +451,13 @@ public class CustomerCartForm extends javax.swing.JFrame {
     private void ContinueOrderingLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ContinueOrderingLabelMouseClicked
         // TODO add your handling code here:
         new CustomerPlaceOrderForm().setVisible(true);
+        dispose();
     }//GEN-LAST:event_ContinueOrderingLabelMouseClicked
+
+    private void RemoveOrderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveOrderButtonActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_RemoveOrderButtonActionPerformed
 
     /**
      * @param args the command line arguments
