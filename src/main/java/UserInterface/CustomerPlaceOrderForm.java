@@ -5,6 +5,7 @@
 package UserInterface;
 
 import Class.Cart;
+import Class.User;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import Class.utils.Auth;
@@ -22,15 +23,25 @@ import javax.swing.table.TableRowSorter;
  */
 public class CustomerPlaceOrderForm extends javax.swing.JFrame {
 
+    User currentUser;
+    
     /**
      * Creates new form CustomerOrderForm
      */
     public CustomerPlaceOrderForm() {
-        initComponents();
+        initComponents();        
         refresh();
         initialisedDocumentListener();
     }
-
+    
+    public CustomerPlaceOrderForm(User currentUser) {
+        initComponents();
+        
+        this.currentUser = currentUser;
+        refresh();
+        initialisedDocumentListener();
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
