@@ -352,7 +352,13 @@ public class CustomerCartForm extends javax.swing.JFrame {
     }//GEN-LAST:event_searchItemTextFieldActionPerformed
 
     private void OrderCheckoutButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_OrderCheckoutButtonActionPerformed
-        // TODO add your handling code here:
+        try {
+            Client.Object.viewOrder("2");
+            new PaymentForm().setVisible(true);
+            dispose();
+        } catch (Exception ex) {
+            Logger.getLogger(CustomerCartForm.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_OrderCheckoutButtonActionPerformed
 
     private void editOrderButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editOrderButtonActionPerformed

@@ -3,6 +3,7 @@ package RMIConnections;
 import Class.User;
 import Class.Item;
 import Class.Cart;
+import Class.Order;
 import Class.utils.DerbyDB;
 import Class.utils.Hasher;
 import Enum.Role;
@@ -12,6 +13,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
@@ -23,7 +25,7 @@ public class Server extends UnicastRemoteObject implements Interface {
         
     }
     
-
+    
     @Override
     public void placeholderMethod() throws RemoteException {
         System.out.println("Hi");
@@ -648,4 +650,199 @@ public class Server extends UnicastRemoteObject implements Interface {
         return orderUpdatedStatus;
     }
 
+    
+    @Override
+    public DefaultTableModel viewOrder(String customerID) throws Exception{
+        String query;
+        PreparedStatement ps;
+        ResultSet result;
+        String[] itemArray = {};
+        double[] priceArray = {};
+        int[] quantityArray = {};
+        int[] itemIdArray = {};
+        int totalQuantity = 0;
+        double[] totalPriceArray = {};
+        double totalOrder = 0;
+        String tempCustomerName = "";
+        String[] columnNames = {"Customer Id", "Customer Name", "Item Id", "Item Name", "Unit Price", "Order Quantity", "Item Total Price", "Order Total Price", "Paid Amount", "Payment Type"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        try {
+            query = """
+                SELECT customer_id,customer_name,item_id,item_name,unit_price,order_quantity,item_totalprice
+                FROM CART
+                WHERE customer_id=?
+                """;
+            ps = DerbyDB.preparedStatement(query);
+            ps.setString(1, customerID);
+            result = ps.executeQuery();
+            while(result.next()){
+                String customerId = result.getString("customer_id");
+                String customerName = result.getString("customer_name");
+                int itemId = result.getInt("item_id");
+                String itemName = result.getString("item_name");
+                double unitPrice = result.getDouble("unit_price");
+                int orderQuantity = result.getInt("order_quantity");
+                double totalPrice = result.getDouble("item_totalprice");
+            
+                itemArray = Arrays.copyOf(itemArray, itemArray.length + 1);
+                itemArray[itemArray.length - 1] = itemName;
+                priceArray = Arrays.copyOf(priceArray, priceArray.length + 1);
+                priceArray[priceArray.length - 1] = unitPrice;
+                quantityArray = Arrays.copyOf(quantityArray, quantityArray.length + 1);
+                quantityArray[quantityArray.length - 1] = orderQuantity;
+                itemIdArray = Arrays.copyOf(itemIdArray, itemIdArray.length + 1);
+                itemIdArray[itemIdArray.length - 1] = itemId;
+                totalPriceArray = Arrays.copyOf(totalPriceArray, totalPriceArray.length + 1);
+                totalPriceArray[totalPriceArray.length - 1] = totalPrice;
+                totalOrder = totalOrder + totalPrice;
+                tempCustomerName = customerName;
+                totalQuantity = totalQuantity + orderQuantity;
+            }
+            Object[] row = {customerID, tempCustomerName, itemIdArray, itemArray, priceArray, quantityArray, totalQuantity, totalPriceArray, totalOrder};
+            model.addRow(row);
+            Object value = model.getValueAt(0, 3);
+        }
+        catch (SQLException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            return model;
+    }
+    
+    @Override
+    public int addOrder(Order newOrder) throws Exception{
+        String query;
+        PreparedStatement ps;
+        String[] orderItemNo = (String[]) newOrder.getOrderItemNo();
+        String[] orderItemName = newOrder.getOrderItemName();
+        double[] orderItemPrice = newOrder.getOrderItemPrice();
+        double[] orderItemTotalPrice = newOrder.getOrderItemTotalPrice();
+        int[] orderQuantity = newOrder.getOrderItemQuantity();
+        String paymentTime = newOrder.getPaymentTime();
+        java.util.Date currentDate = new java.util.Date();
+        java.sql.Date PaymentTime = new java.sql.Date(currentDate.getTime());
+        PaymentTime.setTime(0);
+        
+        String joinedItemNo = String.join(",", orderItemNo);
+        String joinedItemName = String.join(",", orderItemName);
+        String joinedItemPrice = Arrays.toString(orderItemPrice);
+        String joinedOrderTotalPrice = Arrays.toString(orderItemTotalPrice);
+        String joinedOrderQuantity = Arrays.toString(orderQuantity);
+        
+        query = """
+            INSERT INTO CUSTOMERORDER (customer_id, customer_name, item_id, item_name, unit_price, order_quantity, total_quantity, item_totalprice, order_totalprice, paid_amount, payment_type, payment_time) VALUES
+                (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """;
+        ps = DerbyDB.preparedStatement(query);
+        ps.setString(1, newOrder.getCustomerID());
+        ps.setString(2, newOrder.getCustomerName());
+        ps.setString(3, joinedItemNo);
+        ps.setString(4, joinedItemName);
+        ps.setString(5, joinedItemPrice);
+        ps.setString(6, joinedOrderQuantity);
+        ps.setInt(7, newOrder.getOrderTotalQuantity());
+        ps.setString(8, joinedOrderTotalPrice);
+        ps.setDouble(9, newOrder.getOrderTotalPrice());
+        ps.setDouble(10, newOrder.getPaidAmount());
+        ps.setString(11, newOrder.getPaymentType());
+        ps.setString(12, paymentTime);
+        
+        int rowsInserted = ps.executeUpdate();
+        System.out.println(rowsInserted + " rows inserted.");
+        DerbyDB.commit();
+        
+        int receiptNo = 0;
+        
+        try{
+            query = """
+                SELECT MAX(receipt_no) 
+                FROM CUSTOMERORDER
+            """;
+            ps = DerbyDB.preparedStatement(query);
+            ResultSet result = ps.executeQuery();
+            if (result.next()) {
+                receiptNo = result.getInt(1);
+            }else {
+                System.out.println("No rows returned by query.");
+            }
+            DerbyDB.commit();
+        } catch (SQLException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return receiptNo;
+    }
+    
+    @Override
+    public DefaultTableModel getReceipt(int receiptID) throws Exception{
+        String query;
+        PreparedStatement ps;
+        ResultSet result;
+        System.out.println(receiptID);
+        String[] columnNames = {"Receipt Id", "Customer Name", "Item Name",  "Item Price", "Item Quantity", "Total Quantity", "Total Payment", "Payment Time"};
+        DefaultTableModel model = new DefaultTableModel(columnNames, 0);
+        try{
+            query = """
+                SELECT receipt_no, customer_name, item_name, unit_price, order_quantity, total_quantity, paid_amount, payment_time
+                FROM CUSTOMERORDER
+                WHERE receipt_no = ?
+            """;
+            ps = DerbyDB.preparedStatement(query);
+            ps.setInt(1, receiptID);
+            result = ps.executeQuery();
+            if(result.next()){
+                int receiptId = result.getInt("receipt_no");
+                String customerName = result.getString("customer_name");
+                String[] itemName = result.getString("item_name").split(",");
+                String[] tempQuantity = result.getString("order_quantity").replaceAll("\\[|\\]", "").split(",");
+                String[] tempPrice = result.getString("unit_price").replaceAll("\\[|\\]", "").split(",");
+                double totalPayment = result.getDouble("paid_amount");
+                String paymentDate = result.getString("payment_time");
+                int totalQuantity = result.getInt("total_quantity");
+                int[] itemQuantity = new int[itemName.length];
+                double[] itemPrice = new double[itemName.length];
+                for(int i = 0; i < itemName.length; i++){
+                    itemQuantity[i] = Integer.parseInt(tempQuantity[i].trim()); 
+                    System.out.println(itemQuantity[i]);    
+                    itemPrice[i] = Double.parseDouble(tempPrice[i].trim());
+                    System.out.println(itemPrice[i]);
+                }
+                System.out.println(totalQuantity);
+                Object[] row = {receiptId, customerName, itemName, itemPrice, itemQuantity, totalQuantity, totalPayment, paymentDate};
+                model.addRow(row);
+            }
+        }catch (SQLException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return model;
+    }
+    
+    @Override
+    public DefaultTableModel getReport() throws Exception{
+        String[] columnNames = {"Payment Time", "Customer Name", "Item Name", "Total Quantity", "Order Total", "Paid Amount", "Payment Type"};
+        DefaultTableModel model = new DefaultTableModel(columnNames,0);
+        try{
+            String query = "SELECT * FROM CUSTOMERORDER";
+            PreparedStatement ps = DerbyDB.preparedStatement(query);
+            ResultSet rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                String paymentTime = rs.getString("payment_time");
+                String customerName = rs.getString("customer_name");
+                String itemName = rs.getString("item_name");
+                int totalQuantity = rs.getInt("total_quantity");
+                double orderTotal = rs.getDouble("order_totalprice");
+                double paidAmount = rs.getDouble("paid_amount");
+                String paymentMethod = rs.getString("payment_type");
+        
+                Object[] row = {paymentTime, customerName, itemName, totalQuantity, orderTotal, paidAmount, paymentMethod};
+                model.addRow(row);
+            }
+            
+            DerbyDB.commit();
+            
+        }catch (SQLException ex) {
+            Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return model;
+    }
 }

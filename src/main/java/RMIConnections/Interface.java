@@ -3,6 +3,7 @@ package RMIConnections;
 import Class.Cart;
 import Class.User;
 import Class.Item;
+import Class.Order;
 import java.rmi.*;
 import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
@@ -31,4 +32,8 @@ public interface Interface extends Remote{
     public String getCartItem(String searchItem) throws Exception;
     public boolean removeOrder(int userID, String itemName, int itemQuantity)throws Exception;
     public boolean updateCart(int userID, String itemName, int itemQuantity) throws Exception;
+    public DefaultTableModel viewOrder(String customerID) throws Exception;
+    public int addOrder(Order newOrder) throws Exception;
+    public DefaultTableModel getReceipt(int receiptID) throws Exception;
+    public DefaultTableModel getReport() throws Exception;
 }
