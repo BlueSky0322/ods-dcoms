@@ -20,7 +20,7 @@ public class App {
         System.out.println("Connection established with server.");
         Client client = new Client();
         
-        //new AdminCRUDForm().setVisible(true);
+//        new AdminCRUDForm().setVisible(true);
         //new LoginForm().setVisible(false);
         new CustomerPlaceOrderForm().setVisible(true);
         //new CustomerCartForm().setVisible(true);

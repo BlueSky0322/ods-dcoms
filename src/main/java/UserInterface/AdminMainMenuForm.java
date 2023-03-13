@@ -119,6 +119,7 @@ public class AdminMainMenuForm extends javax.swing.JFrame {
 
     private void genReportButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_genReportButtonActionPerformed
         // TODO add your handling code here:
+        new GenerateReport().setVisible(true);
     }//GEN-LAST:event_genReportButtonActionPerformed
 
     private void crudButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_crudButtonActionPerformed

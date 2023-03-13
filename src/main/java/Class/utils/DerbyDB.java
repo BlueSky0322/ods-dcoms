@@ -137,19 +137,18 @@ public class DerbyDB {
                 createCustomerOrderTableQuery
                         = "CREATE TABLE CustomerOrder ("
                         + "receipt_no INT NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY (START WITH 1, INCREMENT BY 1),"
-                        + "order_time TIMESTAMP NOT NULL,"
                         + "customer_id VARCHAR(255) NOT NULL,"
                         + "customer_name VARCHAR(255) NOT NULL,"
-                        + "item_id INT NOT NULL;"
+                        + "item_id VARCHAR(255) NOT NULL,"
                         + "item_name VARCHAR(255) NOT NULL,"
-                        + "unit_price DECIMAL(10,2) NOT NULL,"
-                        + "order_quantity INT NOT NULL,"
-                        + "item_totalprice DECIMAL(10,2) NOT NULL,"
+                        + "unit_price VARCHAR(255) NOT NULL,"
+                        + "order_quantity VARCHAR(255) NOT NULL,"
+                        + "total_quantity INT NOT NULL,"
+                        + "item_totalprice VARCHAR(255) NOT NULL,"
                         + "order_totalprice DECIMAL(10,2) NOT NULL,"
                         + "paid_amount DECIMAL(10,2) NOT NULL,"
                         + "payment_type VARCHAR(40) NOT NULL,"
-                        + "payment_time TIMESTAMP NOT NULL,"
-                        + "payment_made BOOLEAN NOT NULL)";
+                        + "payment_time VARCHAR(40) NOT NULL)";
                 
                 stmt.executeUpdate(createCustomerOrderTableQuery);
                 System.out.println("Table 'Customer Order Table' created successfully.");

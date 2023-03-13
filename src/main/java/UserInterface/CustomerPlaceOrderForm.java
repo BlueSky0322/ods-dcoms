@@ -353,7 +353,6 @@ public class CustomerPlaceOrderForm extends javax.swing.JFrame {
             double itemPrice = Double.valueOf(itemPricePerUnitTextField.getText());
             double itemTotalPrice = itemPrice*Integer.valueOf(orderQuantity);
             
-       
             System.out.println(itemNo);
             if(itemQuantitySpinner.getValue()==""){
                 JOptionPane.showMessageDialog(null, "Incomplete Order! Please try again");
@@ -367,7 +366,7 @@ public class CustomerPlaceOrderForm extends javax.swing.JFrame {
                 Cart item = new Cart("2","Jason",itemNo, itemName, itemPrice, itemQuantity, itemTotalPrice);
             
                 String addStatus = Client.Object.addCart(item);
-            
+                
                 JOptionPane.showMessageDialog(null, addStatus);
                 itemQuantitySpinner.setValue(0);
                 refresh();

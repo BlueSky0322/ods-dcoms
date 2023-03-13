@@ -5,41 +5,57 @@
 package Class;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  *
- * @author JUN WEI
+ * @author putubgs
  */
 public class Order implements Serializable{
+
+    public int receiptId;
     public String customerID;
     public String customerName;
-    public String orderItemNo;
-    public Date orderTime;
-    public String orderItemName;
-    public double orderItemPrice;
-    public int orderStockAmount;
-    public int orderItemQuantity;
+    public String[] orderItemNo;
+    public String[] orderItemName;
+    public double[] orderItemPrice;
+    public double[] orderItemTotalPrice;
+    public int[] orderItemQuantity;
+    public int orderTotalQuantity;
     public double orderTotalPrice;
-    public boolean paymentMade;
     public String paymentType;
     public double paidAmount;
-    public Date paymentTime;
+    public String paymentTime;
+    public int indexCounter;
     
-    public Order(String customerID,String customerName,String orderItemNo, Date orderTime,String orderItemName, double orderItemPrice, int orderStockAmount, int orderItemQuantity, double orderTotalPrice, boolean paymentMade, String paymentType,double paidAmount, Date paymentTime){
+    public Order(String customerID,String customerName,String[] orderItemNo,String[] orderItemName, double[] orderItemPrice, double[] orderItemTotalPrice, int[] orderItemQuantity, int orderTotalQuantity, double orderTotalPrice, String paymentType,double paidAmount, String paymentTime, int indexCounter){
         this.customerID = customerID;
         this.customerName = customerName;
-        this.orderItemNo = orderItemNo;
-        this.orderTime = orderTime;
-        this.orderItemName = orderItemName;
-        this.orderItemPrice = orderItemPrice;
-        this.orderStockAmount = orderStockAmount;
-        this.orderItemQuantity = orderItemQuantity;
+        this.orderItemNo = new String[indexCounter];
+        this.orderItemName = new String[indexCounter];
+        this.orderItemPrice = new double[indexCounter];
+        this.orderItemTotalPrice = new double[indexCounter];
+        this.orderItemQuantity = new int[indexCounter];
+        this.orderTotalQuantity = orderTotalQuantity;
         this.orderTotalPrice = orderTotalPrice;
-        this.paymentMade = paymentMade;
         this.paymentType = paymentType;
         this.paidAmount = paidAmount;
         this.paymentTime = paymentTime;
+        
+        for(int i = 0; i < indexCounter; i++){
+            this.orderItemNo[i] = orderItemNo[i];
+            this.orderItemName[i] = orderItemName[i];
+            this.orderItemPrice[i] = orderItemPrice[i];
+            this.orderItemTotalPrice[i] = orderItemTotalPrice[i];
+            this.orderItemQuantity[i] = orderItemQuantity[i];
+        }
+    }
+
+    public Order(int receiptId){
+        this.receiptId = receiptId;
+    }
+    
+    public int getReceiptID(){
+        return receiptId;
     }
     
     public String getCustomerID(){
@@ -50,32 +66,32 @@ public class Order implements Serializable{
         return customerName;
     }
     
-    public String getOrderItemNo(){
+    public String[] getOrderItemNo(){
         return orderItemNo;
     }
     
-    public String getOrderItemName(){
+    public String[] getOrderItemName(){
         return orderItemName;
     }
     
-    public double getOrderItemPrice(){
+    public double[] getOrderItemPrice(){
         return orderItemPrice;
     }
     
-    public int getOrderStockAmount(){
-        return orderStockAmount;
+    public double[] getOrderItemTotalPrice(){
+        return orderItemTotalPrice;
     }
     
-    public int getOrderItemQuantity(){
+    public int[] getOrderItemQuantity(){
         return orderItemQuantity;
+    }
+    
+    public int getOrderTotalQuantity(){
+        return orderTotalQuantity;
     }
     
     public double getOrderTotalPrice(){
         return orderTotalPrice;
-    }
-    
-    public boolean getPaymentMade(){
-        return paymentMade;
     }
     
     public String getPaymentType(){
@@ -86,11 +102,11 @@ public class Order implements Serializable{
         return paidAmount;
     }
     
-    public Date getOrderTime(){
-        return orderTime;
+    public String getPaymentTime(){
+        return paymentTime;
     }
     
-    public Date getPaymentTime(){
-        return paymentTime;
+    public int getIndexCounter(){
+        return indexCounter;
     }
 }
