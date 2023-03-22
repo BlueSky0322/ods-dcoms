@@ -62,6 +62,7 @@ public class CustomerCartForm extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         ItemPriceTextField = new javax.swing.JTextField();
         refreshLabel = new javax.swing.JLabel();
+        logOutLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -146,7 +147,6 @@ public class CustomerCartForm extends javax.swing.JFrame {
         jLabel7.setText("Subtotal:");
 
         HomeLabel.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        HomeLabel.setText("Home");
 
         CartLabel.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         CartLabel.setText("Cart");
@@ -218,14 +218,22 @@ public class CustomerCartForm extends javax.swing.JFrame {
             }
         });
 
+        logOutLabel.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        logOutLabel.setText("Logout");
+        logOutLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                logOutLabelMouseClicked(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(22, 22, 22)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(3, 3, 3)
@@ -261,28 +269,29 @@ public class CustomerCartForm extends javax.swing.JFrame {
                                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(orderTotalPriceTextField, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(ItemTotalPriceTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addGap(44, 44, 44))
+                                .addGap(44, 85, Short.MAX_VALUE))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                                 .addComponent(OrderCheckoutButton, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(63, 63, 63))))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(ContinueOrderingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(HomeLabel)
-                                .addGap(50, 50, 50)
-                                .addComponent(CartLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(searchItemTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(searchOrderItemLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(refreshLabel))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(YourShoppingCartLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(0, 0, Short.MAX_VALUE)))
-                        .addGap(30, 30, 30))))
+                                .addGap(63, 118, Short.MAX_VALUE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(YourShoppingCartLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(HomeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap())
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(ContinueOrderingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 171, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(CartLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(76, 76, 76)
+                        .addComponent(logOutLabel)
+                        .addGap(19, 19, 19))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(searchItemTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(searchOrderItemLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(refreshLabel)
+                        .addGap(32, 32, 32))))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(14, 14, 14)
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -294,10 +303,12 @@ public class CustomerCartForm extends javax.swing.JFrame {
                 .addGap(12, 12, 12)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(ContinueOrderingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(HomeLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(CartLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(CartLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(logOutLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(YourShoppingCartLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(YourShoppingCartLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 53, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(HomeLabel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(searchItemTextField, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -371,14 +382,14 @@ public class CustomerCartForm extends javax.swing.JFrame {
         int selectedItemRowIndex = cartTable.getSelectedRow();
         
         ItemNameTextField.setText(model.getValueAt(selectedItemRowIndex, 0).toString());
-        ItemQuantitySpinner.setValue(model.getValueAt(selectedItemRowIndex, 2));
         ItemPriceTextField.setText(model.getValueAt(selectedItemRowIndex, 1).toString());
         ItemTotalPriceTextField.setText(model.getValueAt(selectedItemRowIndex, 3).toString());
+        ItemQuantitySpinner.setValue(model.getValueAt(selectedItemRowIndex, 2));
     }//GEN-LAST:event_cartTableMouseClicked
 
     private void ItemQuantitySpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_ItemQuantitySpinnerStateChanged
         // TODO add your handling code here:
-        DefaultTableModel model = (DefaultTableModel)cartTable.getModel();
+         DefaultTableModel model = (DefaultTableModel)cartTable.getModel();
         double itemPricePerUnit = Double.parseDouble(ItemPriceTextField.getText());
         Integer itemQuantity = (Integer)ItemQuantitySpinner.getValue();
         
@@ -465,6 +476,12 @@ public class CustomerCartForm extends javax.swing.JFrame {
 
     }//GEN-LAST:event_RemoveOrderButtonActionPerformed
 
+    private void logOutLabelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_logOutLabelMouseClicked
+        // TODO add your handling code here:
+        new LoginForm().setVisible(true);
+        dispose();
+    }//GEN-LAST:event_logOutLabelMouseClicked
+
     /**
      * @param args the command line arguments
      */
@@ -524,10 +541,11 @@ public class CustomerCartForm extends javax.swing.JFrame {
         DecimalFormat df = new DecimalFormat("0.00");
         orderTotalPriceTextField.setText(String.format("%.2f",totalOrderPrice));
         ItemNameTextField.setText("");
+        ItemQuantitySpinner.setValue(0);
         ItemPriceTextField.setText("");
         ItemTotalPriceTextField.setText("");
         searchItemTextField.setText("Search Item");
-        ItemQuantitySpinner.setValue(0);
+        
     }
     
     private void initialisedDocumentListener(){
@@ -582,6 +600,7 @@ public class CustomerCartForm extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel logOutLabel;
     private javax.swing.JTextField orderTotalPriceTextField;
     private javax.swing.JLabel refreshLabel;
     private javax.swing.JTextField searchItemTextField;
