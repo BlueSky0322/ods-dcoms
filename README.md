@@ -32,6 +32,6 @@ These functionalities include, but are not limited to:
 - Item Object
 - Initialize Item table with some static values
 
+----------------------------------------------
 
-
-** Change to master branch for code
+**NOTE:** **_Change to master branch for code_**
